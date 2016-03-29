@@ -1,0 +1,10 @@
+__pycache__/
+*.py[c]
+/.idea/dataSources.local.xml
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/dictionaries/
+/.idea/inspectionProfiles/
+/pyvenv/
+/.vagrant/
+/docs/build/
