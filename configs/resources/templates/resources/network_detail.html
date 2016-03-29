@@ -1,0 +1,187 @@
+{% extends "resources/network.html" %}
+{% load configs_filters %}
+{% load humanize %}
+
+{% block resources_body %}
+    <div class="panel-heading">
+        <div class="panel-title">
+            {{ object.description | first_line | default:network.network }}
+            <a href="#network-details"
+               data-toggle="collapse"
+               data-target="#network-details"
+               title="toggle network details"
+               class="pull-right visible-xs"
+            ><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+            <span class="pull-right visible-xs">&nbsp;</span>
+            <a href="{% url "resources:network-delete" object.id %}"
+               title="delete network"
+               class="pull-right"
+            ><span class="glyphicon glyphicon-remove"></span></a>
+            <span class="pull-right">&nbsp;</span>
+            <a href="{% url "resources:network-edit" object.id %}"
+               title="edit network"
+               class="pull-right"
+            ><span class="glyphicon glyphicon-pencil"></span></a>
+        </div>
+    </div>
+    <div class="panel-body navbar-collapse collapse" id="network-details">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">network details</div>
+                    <table class="table table-condensed">
+                        <tbody>
+                        <tr>
+                            {% if object.is_host %}
+                                <th class="text-nowrap">host</th>
+                            {% else %}
+                                <th class="text-nowrap">network</th>
+                            {% endif %}
+                            <td>{{ object.network }}</td>
+                        </tr>
+                        {% if object.family == 4 and not object.is_host %}
+                            <tr>
+                                <th class="text-nowrap">netmask</th>
+                                <td>{{ object.netmask }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-nowrap">broadcast</th>
+                                <td>{{ object.broadcast_address }}</td>
+                            </tr>
+                            {% if object.num_addresses > 0 %}
+                                <tr>
+                                    <th class="text-nowrap"
+                                    >usable addresses</th>
+                                    <td>
+                                        {{ object.host_min }} -
+                                        {{ object.host_max }}
+                                        ({{ object.num_addresses|intword }})
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                        {% if object.family == 6 %}
+                            <tr>
+                                <th class="text-nowrap">usable addresses</th>
+                                <td>
+                                    {{ object.host_min }} -
+                                    {{ object.host_max }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">network usage</div>
+                    <table class="table table-condensed">
+                        <tbody>
+                        <tr>
+                            <th class="text-nowrap">status</th>
+                            <td>{{ object.status|lower }}</td>
+                        </tr>
+                        {% if object.family == 4 and not object.is_host %}
+                            <tr>
+                                <th>usage</th>
+                                <td>
+                                    {{ object.allocated | percentage }}
+                                    <span class="label label-success"
+                                    >allocated</span> and
+                                    {{ object.assigned | percentage }}
+                                    <span class="label label-primary">
+                                        assigned
+                                    </span>
+                                    <div class="progress">
+                                        <div class="progress-bar
+                                                    progress-bar-success
+                                                    progress-bar-striped"
+                                             style="width: {{ object.allocated | percentage }}"
+                                        >
+                                            <span class="sr-only">
+                                                {{ object.allocated | percentage }}
+                                                allocated
+                                            </span>
+                                        </div>
+                                        <div class="progress-bar
+                                                    progress-bar-striped"
+                                             style="width: {{ object.assigned | percentage }}"
+                                        >
+                                            <span class="sr-only">
+                                                {{ object.assigned | percentage }}
+                                                assigned
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ object.status|lower }}</td>
+                                <td>{{ object.status|lower }}</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>network</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for network in object.child_blocks %}
+                <tr>
+                    <td>
+                        <a href="{% url "resources:network-edit" network.id %}"
+                           title="edit network"
+                        ><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url "resources:network-delete" network.id %}"
+                           title="delete network"
+                        ><span class="glyphicon glyphicon-remove"></span></a>
+                        &nbsp;
+                        <a href="{{ network.get_absolute_url }}"
+                           title="{{ network.network }} details"
+                        >{{ network.network }}</a>
+                    </td>
+                    <td>{{ network.description | first_line }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group btn-group-sm dropup">
+            <a class="btn btn-default btn-sm"
+               href="{% url "resources:network-new" network.id %}"
+            ><span class="glyphicon glyphicon-plus"></span>&nbsp;add</a>
+            {% with prefixlens=network.prefixlens %}
+                {% if prefixlens %}
+                    <button type="button"
+                            class="btn btn-default btn-sm dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                    ><span class="glyphicon glyphicon-plus"></span>
+                    &nbsp;add block <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu scrollable-menu">
+                        {% for prefixlen in prefixlens reversed %}
+                            <li>
+                                <a href="{% url "resources:network-new" network.id prefixlen %}"
+                                > Add /{{ prefixlen }}{{ prefixlen|prefix_help:network.family }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}
+

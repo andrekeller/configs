@@ -1,0 +1,42 @@
+* {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+body {
+    padding: 5px;
+}
+.panel-heading > .breadcrumb {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.panel-default > .panel-heading,
+.panel-default > .panel-footer {
+    background-color: #f0f0f0;
+}
+/*
+.container-fluid {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+*/
+
+.scrollable-menu {
+    height: auto;
+    max-height: 180px;
+    overflow-x: hidden;
+}
+
+.progress {
+    margin: 5px 0;
+}
+
+.form-spacer {
+    margin: 8px 0;
+}
+label.form-spacer {
+    margin: 8px 0 4px 0;
+}
+

@@ -1,0 +1,12 @@
+defusedxml
+django
+django-debug-toolbar
+django-filter
+django-tagging
+django-tastypie
+djangorestframework
+lxml
+pip-tools
+psycopg2
+pyyaml
+#https://github.com/unbit/uwsgi/archive/uwsgi-2.0.zip#egg=uwsgi

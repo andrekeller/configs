@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="django" name="Django">
+      <configuration>
+        <option name="rootFolder" value="$MODULE_DIR$/configs" />
+        <option name="settingsModule" value="configs/settings.py" />
+        <option name="manageScript" value="manage.py" />
+        <option name="environment" value="&lt;map/&gt;" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/configs" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/configs/static/vendor/bootstrap/js" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/configs/static/css" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/.vagrant" />
+      <excludeFolder url="file://$MODULE_DIR$/artwork" />
+      <excludeFolder url="file://$MODULE_DIR$/configs/static/vendor" />
+      <excludeFolder url="file://$MODULE_DIR$/docs" />
+      <excludeFolder url="file://$MODULE_DIR$/puppet" />
+      <excludeFolder url="file://$MODULE_DIR$/pyvenv" />
+    </content>
+    <orderEntry type="jdk" jdkName="configs-venv" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="TemplatesService">
+    <option name="TEMPLATE_CONFIGURATION" value="Django" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/configs/templates" />
+      </list>
+    </option>
+  </component>
+</module>

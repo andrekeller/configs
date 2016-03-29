@@ -1,0 +1,17 @@
+{% extends "resources.html" %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url "resources:domain-list" %}">domains</a>
+        </li>
+        {% if domain %}
+            <li><a href="{{ domain.get_absolute_url }}">{{ domain }}</a></li>
+            {% if create %}
+                <li class="active">new</li>
+            {% else %}
+                <li class="active">{{ host }}</li>
+            {% endif %}
+        {% endif %}
+    </ul>
+{% endblock %}

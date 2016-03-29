@@ -1,0 +1,37 @@
+{% extends "resources/domain.html" %}
+
+{% block resources_body %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>host</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for host in domain.host_set.all %}
+                <tr>
+                    <td>
+                        <a href="{% url "resources:host-edit" host.id %}"
+                           title="edit host"
+                        ><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url "resources:host-delete" host.id %}"
+                           title="delete host"
+                        ><span class="glyphicon glyphicon-remove"></span></a>
+                        &nbsp;
+                        <a href="{{ host.get_absolute_url }}"
+                           title="{{ host }} details"
+                        >{{ host }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-default btn-sm"
+           href="{% url "resources:host-new" domain.id %}"
+        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add host</a>
+    </div>
+{% endblock %}
+

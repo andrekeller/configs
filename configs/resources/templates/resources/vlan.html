@@ -1,0 +1,11 @@
+{% extends "resources.html" %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url "resources:vlan-list" %}">vlans</a></li>
+        {% if vlan %}
+            <li class="active">vlan {{ vlan.vlan_id }}</li>
+        {% endif %}
+    </ul>
+{% endblock %}
+

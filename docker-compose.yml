@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  database:
+    image: postgres
+    environment:
+      POSTGRES_DB: configs
+      POSTGRES_USER: configs
+      POSTGRES_PASSWORD: twNtxgdPem958u1h8yG
+
+  app:
+    build: .
+    environment:
+      CONFIGS_CONFIGS_ENCDATA_FIELDS: 'location role flavor'
+      CONFIGS_DATABASE_HOST: database
+      CONFIGS_DATABASE_USER: configs
+      CONFIGS_DATABASE_PASSWORD: twNtxgdPem958u1h8yG
+      CONFIGS_DATABASE_SCHEMA: configs
+      CONFIGS_DJANGO_DEBUG: 'no'
+      CONFIGS_SECURITY_ALLOWED_HOSTS: '*'
+      CONFIGS_SECURITY_CSRF_COOKIE_SECURE: 'yes'
+      CONFIGS_SECURITY_SESSION_COOKIE_SECURE: 'yes'
+      CONFIGS_SECURITY_SECRET_KEY: RtDzQIs7u6kE5eyXF1wxuQFzWuXg3DyKF4TodMszloN
+    depends_on:
+      - database
+
+  web:
+    build: docker/nginx
+    depends_on:
+      - app
+    ports:
+      - "8443:443"
+    volumes_from:
+      - app:ro

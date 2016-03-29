@@ -1,0 +1,41 @@
+{% extends "resources/network.html" %}
+{% load configs_filters %}
+
+{% block resources_body %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>network</th>
+                <th>vrf</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for network in object_list %}
+                <tr>
+                    <td>
+                        <a href="{% url "resources:network-edit" network.id %}"
+                           title="edit network"
+                        ><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url "resources:network-delete" network.id %}"
+                           title="delete network"
+                        ><span class="glyphicon glyphicon-remove"></span></a>
+                        &nbsp;
+                        <a href="{{ network.get_absolute_url }}"
+                           title="{{ network.network }} details"
+                        >{{ network.network }}</a>
+                    </td>
+                    <td>{{ network.vrf.name }}</td>
+                    <td>{{ network.description | first_line }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-default btn-sm"
+           href="{% url "resources:network-new" %}"
+        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network</a>
+    </div>
+{% endblock %}

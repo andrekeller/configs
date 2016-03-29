@@ -1,0 +1,144 @@
+{% extends 'resources/network.html' %}
+{% load configs_forms %}
+{% load configs_filters %}
+
+{% block resources_body %}
+    <form class="form-horizontal" method="post">
+        <div class="panel-body">
+            {{ form.non_field_errors }}
+            <div class="row">
+                <label class="form-spacer control-label col-sm-2"
+                       for="{{ form.network.id_for_label }}"
+                >{{ form.network.label|escape|lower }}</label>
+                {{ form.network.errors }}
+                <div class="col-sm-6 form-spacer"
+                >{{ form.network|add_class:"form-control" }}</div>
+                <div class="col-sm-4 form-spacer">
+                    <div class="checkbox">
+                        <label>{{ form.use_reserved_addresses }}
+                            {{ form.use_reserved_addresses.label|escape|lower }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.description.id_for_label }}"
+                >{{ form.description.label|escape|lower }}</label>
+                <div class="col-sm-10 form-spacer"
+                >{{ form.description|add_class:"form-control" }}</div>
+            </div>
+            <div class="row">
+                <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.tags.id_for_label }}"
+                >{{ form.tags.label|escape|lower }}</label>
+                <div class="col-sm-10 form-spacer"
+                >{{ form.tags|add_class:"form-control" }}</div>
+            </div>
+            <div class="row">
+                <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.vrf.id_for_label }}"
+                >{{ form.vrf.label|escape|lower }}</label>
+                <div class="col-sm-4 form-spacer"
+                >{{ form.vrf|add_class:"form-control" }}</div>
+                <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.vlan.id_for_label }}"
+                >{{ form.vlan.label|escape|lower }}</label>
+                <div class="col-sm-4 form-spacer">
+                    <select class="form-control"
+                            id="id_vlan"
+                            name="vlan"></select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.status.id_for_label }}"
+                >{{ form.status.label|escape|lower }}</label>
+                <div class="col-sm-4 form-spacer"
+                >{{ form.status|add_class:"form-control" }}</div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            {% block form_footer %}
+                <button type="submit"
+                        class="btn btn-success btn-sm"
+                ><span class="glyphicon glyphicon-ok"></span>&nbsp;save</button>
+            {% endblock %}
+        </div>
+        {% csrf_token %}
+    </form>
+    <script type="text/javascript">
+        var xhr;
+        var select_vrf, $select_vrf;
+        var select_vlan, $select_vlan;
+        $('#id_tags').selectize({
+            options: {% selectize_tags %},
+            persist: false,
+            create: function(input) {
+                return {
+                    value: input,
+                    text: input
+                }
+            },
+            plugins: ['restore_on_backspace', 'remove_button']
+        });
+        $('#id_status').selectize({
+            create: false,
+            sortField: 'text'
+        });
+        $select_vrf = $('#id_vrf').selectize({
+            create: false,
+            sortField: 'text',
+            onChange: function(value) {
+                if (!value.length) return;
+                select_vlan.disable();
+                select_vlan.clearOptions();
+                select_vlan.load(function(callback) {
+                    xhr && xhr.abort();
+                    xhr = $.ajax({
+                        url: '{% api_url "vlan" format="json" %}&vrf=' + value,
+                        success: function(results) {
+                            if (results['meta']['total_count']) select_vlan.enable();
+                            callback(results['objects']);
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    })
+                });
+            }
+        });
+        $select_vlan = $('#id_vlan').selectize({
+            valueField: 'id',
+            labelField: 'vlan_id',
+            searchField: ['vlan_id', 'vlan_name'],
+            items: [
+                {{ form.vlan.value|default:"" }}
+            ],
+            options: [
+                {% for vlan in vlans %}
+                    {"id":{{ vlan.id }},"vlan_id":{{ vlan.vlan_id }},"vlan_name":"{{ vlan.vlan_name }}"},
+                {% endfor %}
+            ],
+            render: {
+                item: function(item, escape) {
+                    return '<div>' +
+                            (item.vlan_id ? 'VLAN ' + escape(item.vlan_id) + ': ' : '') +
+                            (item.vlan_name ? escape(item.vlan_name) : '') +
+                            '</div>';
+                },
+                option: function(item, escape) {
+                    return '<div>' +
+                            'VLAN ' + escape(item.vlan_id) + '<br />' +
+                            '<b>' + escape(item.vlan_name) + '</b>' +
+                            '</div>';
+                }
+            }
+        });
+
+        select_vlan  = $select_vlan[0].selectize;
+        select_vrf = $select_vrf[0].selectize;
+
+    </script>
+{% endblock %}
+

@@ -1,0 +1,16 @@
+---
+classes:
+  - configs::role::dbserver
+  - configs::role::appserver
+  - configs::role::webserver
+
+configs::role::appserver::config:
+  django:
+    debug: false
+    static_root: '/var/configs/static'
+  security:
+    allowed_hosts: '*'
+    csrf_cookie_secure: true
+    secret_key: 'cu66GkRal0o1TaI3hpstJkDWoI7Hth9aNTfgN6lbH3YSJL7mQ9Ujpb3FvQej'
+    session_cookie_secure: true
+configs::role::appserver::virtualenv_requirements: '/vagrant/requirements.txt'

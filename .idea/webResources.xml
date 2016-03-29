@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebResourcesPaths">
+    <contentEntries>
+      <entry url="file://$PROJECT_DIR$">
+        <entryData>
+          <resourceRoots>
+            <path value="file://$PROJECT_DIR$/configs/gui/static" />
+            <path value="file://$PROJECT_DIR$/configs/static" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/bootstrap" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/bootstrap/css" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/bootstrap/fonts" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/bootstrap/js" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/js" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/selectizejs" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/selectizejs/css" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/selectizejs/js" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/selectizejs/js/standalone" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/selectizejs/less" />
+            <path value="file://$PROJECT_DIR$/configs/static/vendor/selectizejs/less/plugins" />
+          </resourceRoots>
+        </entryData>
+      </entry>
+    </contentEntries>
+  </component>
+</project>

@@ -1,0 +1,43 @@
+{% extends "resources/vlan.html" %}
+
+{% block resources_body %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>vid</th>
+                <th>description</th>
+                <th>vrf</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for vlan in vlan_list %}
+                <tr>
+                    <td>
+                        <a href="{% url "resources:vlan-edit" vlan.id %}"
+                           title="edit vlan"
+                        ><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url "resources:vlan-delete" vlan.id %}"
+                           title="delete vlan"
+                        ><span class="glyphicon glyphicon-remove"></span></a>
+                        &nbsp;
+                        <a href="{{ vlan.get_absolute_url }}"
+                           title="VLAN {{ vlan.vlan_id }} details"
+                        >{{ vlan.vlan_id }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ vlan.get_absolute_url }}"
+                           title="{{ vlan.vlan_name }} details"
+                        >{{ vlan.vlan_name }}</a>
+                    </td>
+                    <td>{{ vlan.vrf }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-default btn-sm" href="{% url "resources:vlan-new" %}"
+        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add vlan</a>
+    </div>
+{% endblock %}

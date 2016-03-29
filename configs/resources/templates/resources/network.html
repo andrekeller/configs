@@ -1,0 +1,22 @@
+{% extends "resources.html" %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url "resources:network-list" %}">networks</a>
+        </li>
+        {% for parent_block in network.parent_blocks reversed %}
+            <li><a href="{{ parent_block.get_absolute_url }}"
+            >{{ parent_block }}</a></li>
+        {% endfor %}
+        {% if network %}
+            {% if create %}
+                <li><a href="{{ network.get_absolute_url }}"
+                >{{ network }}</a></li>
+                <li class="active">new</li>
+            {% else %}
+                <li class="active">{{ network }}</li>
+            {% endif %}
+        {% endif %}
+    </ul>
+{% endblock %}

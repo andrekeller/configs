@@ -1,0 +1,15 @@
+{% extends 'rest_framework/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+confi.gs - api
+{% endblock %}
+
+{% block branding %}
+<a href="{% url 'api-root' %}" class="navbar-brand">confi.gs - api</a>
+{% endblock %}
+
+{% block bootstrap_theme %}
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap-theme.min.css' %}" type="text/css">
+{% endblock %}
