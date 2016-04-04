@@ -10,6 +10,7 @@ installation guide should work.
 For some project dependencies, libraries are needed in order to compile them.
 
 Currently this is at least:
+
 * libpq (psycopg2)
 * libxml (lxml)
 * libxslt (lxml)
