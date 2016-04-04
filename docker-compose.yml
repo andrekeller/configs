@@ -18,17 +18,19 @@ services:
       CONFIGS_DATABASE_SCHEMA: configs
       CONFIGS_DJANGO_DEBUG: 'no'
       CONFIGS_SECURITY_ALLOWED_HOSTS: '*'
-      CONFIGS_SECURITY_CSRF_COOKIE_SECURE: 'yes'
-      CONFIGS_SECURITY_SESSION_COOKIE_SECURE: 'yes'
+      #CONFIGS_SECURITY_CSRF_COOKIE_SECURE: 'yes'
+      #CONFIGS_SECURITY_SESSION_COOKIE_SECURE: 'yes'
       CONFIGS_SECURITY_SECRET_KEY: RtDzQIs7u6kE5eyXF1wxuQFzWuXg3DyKF4TodMszloN
     depends_on:
       - database
 
   web:
     build: docker/nginx
+    environment:
+        UWSGI_PASS: app:8000
     depends_on:
       - app
     ports:
-      - "8443:443"
+      - "8080:8080"
     volumes_from:
       - app:ro
