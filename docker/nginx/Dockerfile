@@ -1,8 +1,13 @@
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx/nginx.conf
+ENV UWSGI_PASS app:8000
+MAINTAINER Andre Keller
 
-RUN mkdir /etc/nginx/ssl
-COPY dhparam.pem /etc/nginx/ssl/dhparam.pem
-COPY ssl-cert.pem /etc/nginx/ssl/ssl-cert.pem
-COPY ssl-key.pem /etc/nginx/ssl/ssl-key.pem
+COPY nginx.conf /etc/nginx/nginx.conf
+RUN touch /etc/nginx/uwsgi-upstream.conf && \
+    chown nginx:nginx /etc/nginx/uwsgi-upstream.conf
+COPY docker-entrypoint.sh /
+
+USER nginx
+EXPOSE 8080
+ENTRYPOINT ["/docker-entrypoint.sh"]
