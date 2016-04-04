@@ -117,4 +117,3 @@ To set *CONFIGS_CONFIGS_ENCDATA_FIELDS*
 
     [configs]
     encdata_fields = 'field1 field2 field3'
-

@@ -4,6 +4,45 @@ Installation
 
 .. _`install`:
 
+confi.gs is a pretty straight-forward Django application, so every generic
+installation guide should work.
+
+For some project dependencies, libraries are needed in order to compile them.
+
+Currently this is at least:
+* libpq (psycopg2)
+* libxml (lxml)
+* libxslt (lxml)
+* libyaml (pyyaml)
+* pcre (uwsgi)
+* openssl (uwsgi)
+
+confi.gs also depends on postgresql 9.4 or later, as previous versions do not
+have support for inet\_ops GiST indexes. All other database backends supported
+by Django will not work for confi.gs
+
+
+Docker compose
+==============
+
+The easiest and fastest way to get confi.gs up and running is to use the
+supplied docker-compose configuration. Just run `docker-compose up` from the
+root directory in order to get a basic setup. The basic setup consists of three
+containers:
+
+**database**
+    This runs the postgresql database server
+
+**app**
+    This runs the actual confi.gs application using uwsgi
+
+**web**
+    This runs the nginx reverse proxy for the application and the static files.
+    confi.gs will be exposed on port 8080 by this container.
+
+Make sure you read :ref:`configuration` to secure your installation.
+
+
 Manual setup on Ubuntu 14.04 LTS
 ================================
 

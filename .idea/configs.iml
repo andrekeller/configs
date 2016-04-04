@@ -19,7 +19,6 @@
       <excludeFolder url="file://$MODULE_DIR$/.vagrant" />
       <excludeFolder url="file://$MODULE_DIR$/artwork" />
       <excludeFolder url="file://$MODULE_DIR$/configs/static/vendor" />
-      <excludeFolder url="file://$MODULE_DIR$/docs" />
       <excludeFolder url="file://$MODULE_DIR$/puppet" />
       <excludeFolder url="file://$MODULE_DIR$/pyvenv" />
     </content>
