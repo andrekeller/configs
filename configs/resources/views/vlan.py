@@ -3,7 +3,6 @@ configs resources app vlan views.
 """
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from resources.models import Vlan
 
@@ -19,10 +18,6 @@ class VlanModifyMixin(VlanMixin):
         'vlan_name',
         'vrf',
     ]
-
-
-class VlanList(VlanMixin, ListView):
-    pass
 
 
 class VlanCreate(VlanModifyMixin, CreateView):

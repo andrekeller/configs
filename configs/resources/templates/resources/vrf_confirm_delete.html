@@ -1,0 +1,28 @@
+{% extends 'resources/vrf.html' %}
+
+{% block resources_body %}
+    <form class="form-horizontal" method="post">
+        <div class="panel-body">
+            <div class="alert alert-danger" role="alert">
+                <p>
+                    Are you sure you want to delete the vrf
+                    <strong>{{ vrf }}</strong>?
+                </p>
+                <p>
+                    Existing vlans/networks will be reassigned to the default
+                    vrf. This will fail on conflicts.
+                </p>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            {% block form_footer %}
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    &nbsp;delete
+                </button>
+            {% endblock %}
+        </div>
+        {% csrf_token %}
+    </form>
+{% endblock %}

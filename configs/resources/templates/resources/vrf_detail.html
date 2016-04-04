@@ -1,4 +1,4 @@
-{% extends "resources/vlan.html" %}
+{% extends "resources/vrf.html" %}
 
 {% block resources_body %}
     <div class="table-responsive">
@@ -7,11 +7,10 @@
             <tr>
                 <th>vid</th>
                 <th>description</th>
-                <th>vrf</th>
             </tr>
             </thead>
             <tbody>
-            {% for vlan in vlan_list %}
+            {% for vlan in vrf.vlan_set.all %}
                 <tr>
                     <td>
                         <a href="{% url "resources:vlan-edit" vlan.id %}"
@@ -30,14 +29,15 @@
                            title="{{ vlan.vlan_name }} details"
                         >{{ vlan.vlan_name }}</a>
                     </td>
-                    <td>{{ vlan.vrf }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="panel-footer">
-        <a class="btn btn-default btn-sm" href="{% url "resources:vlan-new" %}"
+        <a class="btn btn-default btn-sm"
+           href="{% url "resources:vlan-new" %}"
         ><span class="glyphicon glyphicon-plus"></span>&nbsp;add vlan</a>
     </div>
 {% endblock %}
+

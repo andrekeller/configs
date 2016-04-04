@@ -1,0 +1,11 @@
+{% extends "resources.html" %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url "resources:vrf-list" %}">vrfs</a></li>
+        {% if vrf %}
+            <li class="active">{{ vrf }}</li>
+        {% endif %}
+    </ul>
+{% endblock %}
+

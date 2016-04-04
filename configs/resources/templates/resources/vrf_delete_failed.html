@@ -1,0 +1,17 @@
+{% extends 'resources/vrf.html' %}
+
+{% block resources_body %}
+    <div class="panel-body">
+        <div class="alert alert-danger" role="alert">
+            <p>
+                Could not delete vrf, there would be conflicting networks or
+                vlans in the default vrf.
+            </p>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-default btn-sm"
+           href="{% url "resources:vrf-delete" vrf_pk %}"
+        ><span class="glyphicon glyphicon-backward"></span>&nbsp;back</a>
+    </div>
+{% endblock %}

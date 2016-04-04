@@ -1,0 +1,37 @@
+{% extends "resources/vrf.html" %}
+
+{% block resources_body %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>vrf</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for vrf in vrf_list %}
+                <tr>
+                    <td>
+                        <a href="{% url "resources:vrf-edit" vrf.id %}"
+                           title="edit vrf"
+                        ><span class="glyphicon glyphicon-pencil"></span></a>
+                        {% if vrf.id != 1 %}
+                        <a href="{% url "resources:vrf-delete" vrf.id %}"
+                           title="delete vrf"
+                        ><span class="glyphicon glyphicon-remove"></span></a>
+                        {% endif %}
+                        &nbsp;
+                        <a href="{{ vrf.get_absolute_url }}"
+                           title="VRF {{ vrf }} details"
+                        >{{ vrf }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-default btn-sm" href="{% url "resources:vrf-new" %}"
+        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add vrf</a>
+    </div>
+{% endblock %}
