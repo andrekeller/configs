@@ -36,7 +36,7 @@
     </div>
     <div class="panel-footer">
         <a class="btn btn-default btn-sm"
-           href="{% url "resources:vlan-new" %}"
+           href="{% url "resources:vlan-new" vrf.id %}"
         ><span class="glyphicon glyphicon-plus"></span>&nbsp;add vlan</a>
     </div>
 {% endblock %}

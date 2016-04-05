@@ -1,0 +1,8 @@
+{% if parent %}
+    <li><a href="{{ parent.get_absolute_url }}">{{ parent }}</a></li>
+    {% if create %}
+        <li class="active">new</li>
+    {% else %}
+        <li class="active">{{ object }}</li>
+    {% endif %}
+{% endif %}

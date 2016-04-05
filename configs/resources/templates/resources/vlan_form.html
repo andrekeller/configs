@@ -1,7 +1,47 @@
 {% extends 'resources/vlan.html' %}
-{% block body %}
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-</form>
+{% load configs_filters %}
+
+{% block resources_body %}
+    <form class="form-horizontal" method="post">
+        <div class="panel-body">
+            {{ form.non_field_errors }}
+            <div class="row">
+                <label class="form-spacer control-label col-sm-1"
+                       for="{{ form.vlan_id.id_for_label }}"
+                >{{ form.vlan_id.label|escape|lower }}</label>
+                {{ form.vlan_id.errors }}
+                <div class="col-sm-4 form-spacer"
+                >{{ form.vlan_id|add_class:"form-control" }}</div>
+            </div>
+            <div class="row">
+                <label class="form-spacer control-label col-sm-1"
+                       for="{{ form.vlan_name.id_for_label }}"
+                >{{ form.vlan_name.label|escape|lower }}</label>
+                {{ form.vlan_name.errors }}
+                <div class="col-sm-4 form-spacer"
+                >{{ form.vlan_name|add_class:"form-control" }}</div>
+            </div>
+            <div class="row">
+                <label class="form-spacer control-label col-sm-1"
+                       for="{{ form.vrf.id_for_label }}"
+                >{{ form.vrf.label|escape|lower }}</label>
+                {{ form.vrf.errors }}
+                <div class="col-sm-4 form-spacer"
+                >{{ form.vrf|add_class:"form-control" }}</div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            {% block form_footer %}
+                <button type="submit" class="btn btn-success btn-sm"
+                ><span class="glyphicon glyphicon-ok"></span>&nbsp;save</button>
+            {% endblock %}
+        </div>
+        {% csrf_token %}
+    </form>
+    <script type="text/javascript">
+        $('#id_vrf').selectize({
+            create: false,
+            sortField: 'text'
+        });
+    </script>
 {% endblock %}

@@ -36,5 +36,11 @@
         </div>
         {% csrf_token %}
     </form>
+    <script type="text/javascript">
+        $('#id_domain').selectize({
+            create: false,
+            sortField: 'text'
+        });
+    </script>
 {% endblock %}
 

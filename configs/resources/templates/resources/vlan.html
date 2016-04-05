@@ -2,10 +2,8 @@
 
 {% block breadcrumbs %}
     <ul class="breadcrumb">
-        <li><a href="{% url "resources:vlan-list" %}">vlans</a></li>
-        {% if vlan %}
-            <li class="active">vlan {{ vlan.vlan_id }}</li>
-        {% endif %}
+        <li><a href="{% url "resources:vrf-list" %}">vrfs</a></li>
+        {% include 'resources/_parent_breadcrumb.html' %}
     </ul>
 {% endblock %}
 
