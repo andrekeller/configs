@@ -7,11 +7,9 @@
 click==6.6                # via pip-tools
 defusedxml==0.4.1
 django-debug-toolbar==1.4
-django-filter==0.13.0
 django-tagging==0.4.1
 django-tastypie==0.13.3
 django==1.9.5
-djangorestframework==3.3.3
 first==2.0.1              # via pip-tools
 lxml==3.6.0
 pip-tools==1.6

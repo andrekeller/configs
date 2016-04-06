@@ -1,12 +1,13 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
+from api.mixins import AuthMixin
 from resources.models import Vlan
 
 
 class VlanResource(ModelResource):
     vrf = fields.ForeignKey('resources.api.vrf.VrfResource', 'vrf')
 
-    class Meta:
+    class Meta(AuthMixin):
         queryset = Vlan.objects.all()
         limit = 0
         max_limit = None
