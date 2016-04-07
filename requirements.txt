@@ -12,11 +12,12 @@ django-tastypie==0.13.3
 django==1.9.5
 first==2.0.1              # via pip-tools
 lxml==3.6.0
-pip-tools==1.6
+pip-tools==1.6.1
 psycopg2==2.6.1
 python-dateutil==2.5.2    # via django-tastypie
 python-mimeparse==1.5.1   # via django-tastypie
 pyyaml==3.11
+requests==2.9.1
 six==1.10.0               # via pip-tools, python-dateutil
 sqlparse==0.1.19          # via django-debug-toolbar
 https://github.com/unbit/uwsgi/archive/uwsgi-2.0.zip#egg=uwsgi

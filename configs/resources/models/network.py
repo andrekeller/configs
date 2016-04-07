@@ -362,7 +362,7 @@ class Network(models.Model):
             if not self.use_reserved_addresses:
                 try:
                     if self.network_address == str(
-                        self._child_blocks(limit=1)[0]
+                        self.child_blocks.first()
                     ):
                         raise ValidationError('network address')
                 except IndexError:
@@ -371,8 +371,7 @@ class Network(models.Model):
                 if self.family == 4:
                     try:
                         if self.broadcast_address == str(
-                                self._child_blocks(limit=1,
-                                                   order='D')[0]
+                                self.child_blocks.order_by('-network').first()
                         ):
                             raise ValidationError('broadcast address')
                     except IndexError:
