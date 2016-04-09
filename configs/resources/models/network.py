@@ -13,6 +13,22 @@ from cidrfield import IPv4Network, IPv6Network
 from .decorators import valid_network_property
 
 
+class RootNetworkManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().extra(
+            where=["""
+                NOT EXISTS(
+                    SELECT n.network
+                    FROM resources_network n
+                    WHERE
+                        n.network >> "resources_network"."network" AND
+                        n.vrf_id = "resources_network"."vrf_id"
+                )"""""]
+        )
+
+
+
 class Network(models.Model):
     """
     model to represent the networks and ip addresses.
@@ -25,6 +41,9 @@ class Network(models.Model):
     status = models.ForeignKey('resources.ResourceStatus', default=1)
     tags = TagField()
     host = models.ForeignKey('resources.Host', blank=True, null=True)
+
+    objects = models.Manager()
+    root_objects = RootNetworkManager()
 
     class Meta:
         ordering = ['network']
@@ -40,53 +59,28 @@ class Network(models.Model):
         """
         return str(self.network)
 
-    def _child_blocks(self, order='A', limit=None, offset=None):
+    @valid_network_property
+    def child_blocks(self):
         """
-        helper function to find child blocks of network object
+        child blocks of the network object.
 
-        :param order: either A for ascending or D for descending
-        :type order: str
-        :param limit: number of results to return
-        :type limit: int
-        :param offset: number of results to skip
-        :type offset: int
-        :returns: RawQuerySet
+        :returns: child blocks
+        :rtype: RawQuerySet
         """
-        sql_limit = ""
-        if limit:
-            sql_limit = "LIMIT %d" % limit
-
-        sql_offset = ""
-        if offset:
-            sql_offset = "OFFSET %d" % limit
-
-        sql_order = "ASC"
-        if order == "D":
-            sql_order = "DESC"
-
-        child_block_ids_query = '''
-          SELECT c.id
-          FROM   resources_network c
-          WHERE  c.network << '%(network)s' AND c.vrf_id = %(vrf_id)d
-          AND    NOT EXISTS(
-            SELECT 1
-            FROM   resources_network n
-            WHERE  c.network << n.network AND n.network << '%(network)s'
-          )
-          ORDER BY c.network %(order)s
-          %(limit)s
-          %(offset)s
-        ''' % {'limit': sql_limit,
-               'offset': sql_offset,
-               'order': sql_order,
-               'vrf_id': self.vrf_id,
-               'network': self.network}
-        cursor = connection.cursor()
-        try:
-            cursor.execute(child_block_ids_query)
-            return Network.objects.filter(id__in=(x[0] for x in cursor))
-        finally:
-            cursor.close()
+        return Network.objects.extra(
+            where=["""
+                "resources_network"."network" << %s AND
+                "resources_network"."vrf_id" = %s AND
+                NOT EXISTS  (
+                    SELECT 1
+                    FROM resources_network n
+                    WHERE
+                        "resources_network"."network" << n.network AND
+                         n.network << %s
+                )
+            """],
+            params=(self.network.compressed, self.vrf_id, self.network.compressed)
+        ).order_by('network')
 
     @valid_network_property
     def netmask(self):
@@ -112,16 +106,6 @@ class Network(models.Model):
         :rtype: str
         """
         return str(self.network.broadcast_address)
-
-    @valid_network_property
-    def child_blocks(self):
-        """
-        child blocks of the network object.
-
-        :returns: child blocks
-        :rtype: RawQuerySet
-        """
-        return self._child_blocks()
 
     @valid_network_property
     def host_max(self):
@@ -316,26 +300,6 @@ class Network(models.Model):
         """
         return reverse('resources:network-detail', args=[self.pk])
 
-    @staticmethod
-    def get_root_blocks():
-        """
-        root level network objects (i.e. top-level objects without parent)
-
-        :returns: root-level network objects
-        :rtype: QuerySet
-        """
-        raw_qs_query = '''
-          SELECT c.id, c.network
-          FROM   resources_network c
-          WHERE  NOT EXISTS (
-            SELECT n.network
-            FROM   resources_network n
-            WHERE  n.network >> c.network and n.vrf_id = c.vrf_id
-          )
-          ORDER BY network ASC
-        '''
-        return Network.objects.raw(raw_qs_query)
-
     def clean(self):
         cleaned_data = super(Network, self).clean()
 
@@ -362,7 +326,7 @@ class Network(models.Model):
             if not self.use_reserved_addresses:
                 try:
                     if self.network_address == str(
-                        self._child_blocks(limit=1)[0]
+                        self.child_blocks.first()
                     ):
                         raise ValidationError('network address')
                 except IndexError:
@@ -371,8 +335,7 @@ class Network(models.Model):
                 if self.family == 4:
                     try:
                         if self.broadcast_address == str(
-                                self._child_blocks(limit=1,
-                                                   order='D')[0]
+                                self.child_blocks.order_by('-network').first()
                         ):
                             raise ValidationError('broadcast address')
                     except IndexError:
