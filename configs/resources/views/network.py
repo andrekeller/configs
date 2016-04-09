@@ -32,7 +32,7 @@ class NetworkModifyMixin(NetworkMixin, ContextMixin):
 
 
 class NetworkList(NetworkMixin, ListView):
-    queryset = Network.get_root_blocks()
+    queryset = Network.root_objects.all().select_related('vlan', 'vrf')
 
 
 class NetworkDetail(NetworkMixin, DetailView):
