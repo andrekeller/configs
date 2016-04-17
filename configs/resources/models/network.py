@@ -13,6 +13,21 @@ from cidrfield import IPv4Network, IPv6Network
 from .decorators import valid_network_property
 
 
+class NetworkManager(models.Manager):
+
+    def search(self, term):
+        pass
+
+
+class HostNetworkManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().extra(
+            where=["""
+              (masklen(network) = 32 and family(network) = 4) OR (masklen(network) = 128 and family(network) = 6)
+            """]
+        )
+
 class RootNetworkManager(models.Manager):
 
     def get_queryset(self):
@@ -42,8 +57,9 @@ class Network(models.Model):
     tags = TagField()
     host = models.ForeignKey('resources.Host', blank=True, null=True)
 
-    objects = models.Manager()
+    objects = NetworkManager()
     root_objects = RootNetworkManager()
+    host_objects = HostNetworkManager()
 
     class Meta:
         ordering = ['network']

@@ -17,6 +17,7 @@ class VrfModelAdmin(admin.ModelAdmin):
 
 class NetworkInline(admin.TabularInline):
     model = Network
+    raw_id_fields = ('host',)
     extra = 1
 
 

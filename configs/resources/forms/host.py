@@ -12,7 +12,7 @@ class HostForm(ParentModelForm):
             'name',
             'domain',
             'tags',
-            'encdata'
+            'encdata',
         ]
         widgets = {
             'encdata': EncdataWidget(),

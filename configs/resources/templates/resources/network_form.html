@@ -52,6 +52,13 @@
             </div>
             <div class="row">
                 <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.host.id_for_label }}"
+                >{{ form.host.label|escape|lower }}</label>
+                <div class="col-sm-4 form-spacer"
+                >{{ form.host|add_class:"form-control" }}</div>
+            </div>
+            <div class="row">
+                <label class="control-label col-sm-2 form-spacer"
                        for="{{ form.status.id_for_label }}"
                 >{{ form.status.label|escape|lower }}</label>
                 <div class="col-sm-4 form-spacer"
@@ -83,6 +90,10 @@
             plugins: ['restore_on_backspace', 'remove_button']
         });
         $('#id_status').selectize({
+            create: false,
+            sortField: 'text'
+        });
+        $('#id_host').selectize({
             create: false,
             sortField: 'text'
         });

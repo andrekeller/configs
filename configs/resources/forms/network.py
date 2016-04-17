@@ -32,6 +32,7 @@ class NetworkForm(forms.ModelForm):
             'vrf',
             'vlan',
             'status',
+            'host',
             'tags',
         ]
         widgets = {
