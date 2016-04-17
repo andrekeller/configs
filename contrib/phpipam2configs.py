@@ -80,18 +80,16 @@ class ConfigsApi:
         :param parameters: Query parameters
         :return: dict if one result or list of dicts if multiple results
         """
-        default_parameters = {
-            'format': 'json',
-        }
         default_parameters.update(parameters)
         resource_url = '%s/%s/?%s' % (
             self.url,
             '/'.join(list(resources)),
-            urlencode(default_parameters)
+            urlencode(parameters)
         )
         req = requests.get(
             resource_url,
-            auth=self.auth
+            auth=self.auth,
+            headers={'Content-Type': 'application/json'},
         )
         req.raise_for_status()
         response = req.json()
@@ -132,8 +130,10 @@ class PhpipamApi:
         self.url = url
         req = requests.post(
             '/'.join([self.url, 'user', '']),
-            auth=(user, password)
+            auth=(user, password),
+            headers={'Content-Type': 'application/json'},
         )
+        print(req.json())
         req.raise_for_status()
         self.token = req.json().get('data', {}).get('token')
 
@@ -145,7 +145,9 @@ class PhpipamApi:
         """
         req = requests.get(
             '%s/%s/' % (self.url, '/'.join(list(args))),
-            headers={'phpipam-token': self.token})
+            headers={
+                'phpipam-token': self.token,
+                'Content-Type': 'application/json'})
         return req.json()
 
     @property
