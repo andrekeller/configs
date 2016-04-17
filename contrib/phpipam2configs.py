@@ -80,7 +80,6 @@ class ConfigsApi:
         :param parameters: Query parameters
         :return: dict if one result or list of dicts if multiple results
         """
-        default_parameters.update(parameters)
         resource_url = '%s/%s/?%s' % (
             self.url,
             '/'.join(list(resources)),
@@ -133,7 +132,6 @@ class PhpipamApi:
             auth=(user, password),
             headers={'Content-Type': 'application/json'},
         )
-        print(req.json())
         req.raise_for_status()
         self.token = req.json().get('data', {}).get('token')
 
@@ -298,15 +296,23 @@ def phpipam2configs(phpipam, configs, logger):
         # We will process each subnet from the current section
         for subnet in phpipam.get_subnets(section['id']):
 
-            subnet_dict = {
-                'use_reserved_addresses': False,
-                'description': subnet['description'],
-                # confi.gs does not store the netmask separate from the prefix
-                'network': ipaddress.ip_network(
-                    "%s/%s" % (subnet['subnet'], subnet['mask'])
-                ),
-            }
-            logger.debug('processing phpipam subnet "%s"', subnet_dict['network'])
+            if subnet['isFolder'] == '1':
+                logger.debug('skip folder %s' % subnet['description'])
+                continue
+
+            try:
+                subnet_dict = {
+                    'use_reserved_addresses': False,
+                    'description': subnet['description'],
+                    # confi.gs does not store the netmask separate from the prefix
+                    'network': ipaddress.ip_network(
+                        "%s/%s" % (subnet['subnet'], subnet['mask'])
+                    ),
+                }
+                logger.debug('processing phpipam subnet "%s"', subnet_dict['network'])
+            except ValueError:
+                logger.warn('skip invalid subnet %s', subnet)
+                continue
 
             # Process each address store for the current subnet
             for address in phpipam.get_addresses(subnet['id']):
