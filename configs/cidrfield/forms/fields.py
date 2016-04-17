@@ -1,5 +1,5 @@
 """
-configs cidr form field.
+confi.gs cidr form field.
 
 django formfield to represent cidr field in django forms.
 """

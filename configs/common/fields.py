@@ -1,10 +1,10 @@
 """
-configs common fields
+confi.gs common fields
 """
 from django.db.models import CharField
 
 
 class TagField(CharField):
     """
-    configs tag field
+    confi.gs tag field
     """

@@ -1,8 +1,12 @@
 """
-configs resources app vlan view urls.
+confi.gs vlan urls.
 """
+# django
 from django.conf.urls import url
-from ..views import VlanCreate, VlanDelete, VlanUpdate
+# confi.gs
+from ..views import VlanCreate
+from ..views import VlanDelete
+from ..views import VlanUpdate
 
 urlpatterns = [
     url(r'^new$', VlanCreate.as_view(), name='vlan-new'),

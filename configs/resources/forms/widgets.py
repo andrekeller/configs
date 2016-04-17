@@ -1,4 +1,9 @@
+"""
+confi.gs resources form widgets
+"""
+# stdlib
 import json
+# django
 from django.forms.widgets import Widget, TextInput
 from django.conf import settings
 from django.utils.encoding import force_text
@@ -6,12 +11,18 @@ from django.utils.safestring import mark_safe
 
 
 class EncdataWidget(Widget):
+    """
+    A widget for representing encdata in a form.
+    """
 
     def __init__(self, attrs=None):
         super().__init__(attrs)
         self.encdata_fields = settings.ENCDATA_FIELDS
 
     def render(self, name, value, attrs=None):
+        """
+        renders encdata JSON as multiple form inputs.
+        """
         try:
             value_dict = json.loads(value)
         except TypeError:
@@ -26,7 +37,7 @@ class EncdataWidget(Widget):
             field_attrs = dict(final_attrs, id=field_id)
             html += [
                 '<div class="input-group form-spacer">',
-                '<span class="input-group-addon">{}</label></span>'.format(
+                '<span class="input-group-addon">{}</span>'.format(
                     encdata_field
                 ),
                 TextInput(attrs=attrs).render(field_name,
@@ -37,6 +48,9 @@ class EncdataWidget(Widget):
         return mark_safe('\n'.join(html))
 
     def value_from_datadict(self, data, files, name):
+        """
+        converts encdata received from a form submit into JSON
+        """
         value = {}
         for encdata_field in self.encdata_fields:
             field_name = '%s_%s' % (name, encdata_field)

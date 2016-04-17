@@ -1,15 +1,21 @@
 """
-configs project configuration
+confi.gs project configuration
 """
 import configparser
 import os
 
 
-def str2bool(string):
-    if isinstance(string, str) and string.lower() in ['0', 'false', 'no']:
+def any2bool(obj):
+    """
+    returns a boolean based on a string.
+
+    str('0'), str('false') and str('no') evaluate to False, others
+    evaluate to bool(obj)
+    """
+    if isinstance(obj, str) and obj.lower() in ['0', 'false', 'no']:
         return False
     else:
-        return bool(string)
+        return bool(obj)
 
 BASE_DIR = os.path.dirname(__file__)
 
@@ -23,7 +29,7 @@ SECRET_KEY = os.getenv('CONFIGS_SECURITY_SECRET_KEY',
                                        )
                        )
 
-DEBUG = str2bool(os.getenv('CONFIGS_DJANGO_DEBUG',
+DEBUG = any2bool(os.getenv('CONFIGS_DJANGO_DEBUG',
                            CONFIGS_INI.getboolean('django',
                                                   'debug',
                                                   fallback=True
@@ -49,6 +55,7 @@ ENCDATA_FIELDS = os.getenv('CONFIGS_CONFIGS_ENCDATA_FIELDS',
 # Application definition
 
 CONFIGS_DEFAULT_APPS = (
+    # django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,10 +64,11 @@ CONFIGS_DEFAULT_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    # 3rd-party
     'tagging',
     'tastypie',
+    # confi.gs
     'api',
-    'entities',
     'common',
     'resources',
 )
@@ -176,7 +184,7 @@ STATIC_ROOT = os.getenv('CONFIGS_DJANGO_STATIC_ROOT',
                         )
 STATIC_URL = '/static/'
 
-CSRF_COOKIE_SECURE = str2bool(
+CSRF_COOKIE_SECURE = any2bool(
     os.getenv(
         'CONFIGS_SECURITY_CSRF_COOKIE_SECURE',
         CONFIGS_INI.getboolean(
@@ -187,7 +195,7 @@ CSRF_COOKIE_SECURE = str2bool(
     )
 )
 
-SESSION_COOKIE_SECURE = str2bool(
+SESSION_COOKIE_SECURE = any2bool(
     os.getenv(
         'CONFIGS_SECURITY_SEESION_COOKIE_SECURE',
         CONFIGS_INI.getboolean(

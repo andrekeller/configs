@@ -1,14 +1,24 @@
-import cidrfield.fields
-import cidrfield.validators
+"""
+confi.gs resources initial database schema
+"""
+# django
 from django.contrib.postgres.fields.hstore import HStoreField
 from django.contrib.postgres.operations import HStoreExtension
 from django.db import migrations, models
-import django.db.models.deletion
-import resources.models.mixins
-import tagging.fields
+from django.db.models.deletion import CASCADE
+from django.db.models.deletion import SET_DEFAULT
+# 3rd-party
+from tagging.fields import TagField
+# confi.gs
+from cidrfield.fields import CidrField
+from cidrfield.validators import validate_network
+from common.models.mixins import ValidateModelMixin
 
 
 class Migration(migrations.Migration):
+    """
+    confi.gs resource initial migration.
+    """
     initial = True
 
     dependencies = [
@@ -57,14 +67,14 @@ class Migration(migrations.Migration):
                     )
                 ),
                 (
-                    'tags', tagging.fields.TagField(
+                    'tags', TagField(
                         blank=True,
                         max_length=255
                     )
                 ),
                 (
                     'domain', models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
+                        on_delete=CASCADE,
                         to='resources.Domain'
                     )
                 ),
@@ -82,8 +92,8 @@ class Migration(migrations.Migration):
                     )
                 ),
                 (
-                    'network', cidrfield.fields.CidrField(
-                        validators=[cidrfield.validators.validate_network]
+                    'network', CidrField(
+                        validators=[validate_network]
                     )
                 ),
                 (
@@ -98,7 +108,7 @@ class Migration(migrations.Migration):
                     )
                 ),
                 (
-                    'tags', tagging.fields.TagField(
+                    'tags', TagField(
                         blank=True,
                         max_length=255
                     )
@@ -107,7 +117,7 @@ class Migration(migrations.Migration):
                     'host', models.ForeignKey(
                         blank=True,
                         null=True,
-                        on_delete=django.db.models.deletion.CASCADE,
+                        on_delete=CASCADE,
                         to='resources.Host'
                     )
                 ),
@@ -135,7 +145,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             bases=(
-                resources.models.mixins.ValidateModelMixin,
+                ValidateModelMixin,
                 models.Model
             ),
         ),
@@ -162,7 +172,7 @@ class Migration(migrations.Migration):
                 'ordering': ['vlan_id'],
             },
             bases=(
-                resources.models.mixins.ValidateModelMixin,
+                ValidateModelMixin,
                 models.Model
             ),
         ),
@@ -185,7 +195,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             bases=(
-                resources.models.mixins.ValidateModelMixin,
+                ValidateModelMixin,
                 models.Model
             ),
         ),
@@ -194,7 +204,7 @@ class Migration(migrations.Migration):
             name='vrf',
             field=models.ForeignKey(
                 default=1,
-                on_delete=django.db.models.deletion.SET_DEFAULT,
+                on_delete=SET_DEFAULT,
                 to='resources.Vrf'
             ),
         ),
@@ -203,7 +213,7 @@ class Migration(migrations.Migration):
             name='status',
             field=models.ForeignKey(
                 default=1,
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=CASCADE,
                 to='resources.ResourceStatus'
             ),
         ),
@@ -213,7 +223,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 null=True,
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=CASCADE,
                 to='resources.Vlan'
             ),
         ),
@@ -222,7 +232,7 @@ class Migration(migrations.Migration):
             name='vrf',
             field=models.ForeignKey(
                 default=1,
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=CASCADE,
                 to='resources.Vrf'
             ),
         ),

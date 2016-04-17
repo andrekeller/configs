@@ -1,9 +1,14 @@
 """
-configs resources app vlan view urls.
+confi.gs domain urls
 """
+# django
 from django.conf.urls import url
-from ..views import DomainCreate, DomainDelete, DomainDetail, DomainList,\
-    DomainUpdate
+# confi.gs
+from ..views import DomainCreate
+from ..views import DomainDelete
+from ..views import DomainDetail
+from ..views import DomainList
+from ..views import DomainUpdate
 
 urlpatterns = [
     url(r'^$', DomainList.as_view(), name='domain-list'),

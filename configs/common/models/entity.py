@@ -1,8 +1,7 @@
+"""
+confi.gs common entity models
+"""
 from django.db import models
-
-"""
-models related to entity (customers, partners, etc.) management
-"""
 
 
 class Entity(models.Model):

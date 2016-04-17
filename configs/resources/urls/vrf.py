@@ -1,9 +1,14 @@
 """
-confi.gs resources app vrf urls
+confi.gs vrf urls
 """
-
+# django
 from django.conf.urls import url
-from ..views import VrfCreate, VrfDelete, VrfDetail, VrfList, VrfUpdate
+# confi.gs
+from ..views import VrfCreate
+from ..views import VrfDelete
+from ..views import VrfDetail
+from ..views import VrfList
+from ..views import VrfUpdate
 
 urlpatterns = [
     url(r'^$', VrfList.as_view(), name='vrf-list'),

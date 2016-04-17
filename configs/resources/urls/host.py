@@ -1,8 +1,13 @@
 """
-configs resources app vlan view urls.
+confi.gs host urls
 """
+# django
 from django.conf.urls import url
-from ..views import HostCreate, HostDelete, HostDetail, HostUpdate
+# confi.gs
+from ..views import HostCreate
+from ..views import HostDelete
+from ..views import HostDetail
+from ..views import HostUpdate
 
 urlpatterns = [
     url(r'^(?P<pk>\d+)$', HostDetail.as_view(), name='host-detail'),

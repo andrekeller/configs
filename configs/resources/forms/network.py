@@ -1,9 +1,17 @@
+"""
+confi.gs network forms
+"""
+# django
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+# confi.gs
 from ..models import Network
 
 
 class NetworkForm(forms.ModelForm):
+    """
+    confi.gs network form
+    """
 
     def __init__(self, parent=None, prefixlen=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

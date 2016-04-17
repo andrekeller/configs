@@ -1,8 +1,13 @@
 """
-confi.gs resources app urls
+confi.gs resources urls
 """
-from django.conf.urls import include, url
-from . import domain, host, network, vlan, vrf
+from django.conf.urls import include
+from django.conf.urls import url
+from . import domain
+from . import host
+from . import network
+from . import vlan
+from . import vrf
 
 urlpatterns = [
     url(r'^domain/', include(domain)),

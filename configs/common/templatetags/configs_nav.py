@@ -1,5 +1,5 @@
 """
-configs template tags
+confi.gs navigation template tags
 """
 from django import template
 from django.core.urlresolvers import reverse
@@ -17,4 +17,3 @@ def navactive(context, url):
     if request.path.startswith(reverse(url)):
         return "active"
     return ""
-

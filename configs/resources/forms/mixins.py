@@ -1,8 +1,17 @@
+"""
+confi.gs resources form mixins
+"""
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.forms import ModelForm
 
 
 class ParentModelForm(ModelForm):
+    """
+    mixin for a form with models that have parents.
+
+    this is used to provide sane defaults for related form fields, if forms
+    represent hierichal models.
+    """
     parent_model = None
 
     def __init__(self, parent=None, *args, **kwargs):

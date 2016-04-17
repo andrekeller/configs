@@ -1,5 +1,5 @@
 """
-configs resources app models.
+confi.gs resources app models.
 """
 
 from .host import Domain, Host

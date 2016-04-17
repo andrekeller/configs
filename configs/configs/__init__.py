@@ -1,3 +1,3 @@
 """
-configs project
+confi.gs project
 """

@@ -1,3 +1,10 @@
+"""
+confi.gs api validation
+
+this should be handled by upstream:
+ - https://github.com/django-tastypie/django-tastypie/pull/923
+ - https://github.com/django-tastypie/django-tastypie/pull/1463
+"""
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ModelForm
 from django.forms.models import model_to_dict

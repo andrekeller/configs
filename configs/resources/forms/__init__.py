@@ -1,5 +1,5 @@
 """
-configs resources app forms
+confi.gs resources forms
 """
 from .host import HostForm
 from .network import NetworkForm

@@ -1,11 +1,13 @@
 """
-configs cidr field.
+confi.gs cidrfield model fields.
 """
+# django
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+# confi.gs
+from . import IPv4Network
+from . import IPv6Network
 from .forms.fields import CidrField as CidrFormField
-from . import IPv4Network, IPv6Network
 from .validators import validate_network
 
 

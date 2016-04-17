@@ -1,7 +1,13 @@
+"""
+confi.gs resources server-side functions migrations
+"""
 from django.db import migrations
 
 
 class Migration(migrations.Migration):
+    """
+    confi.gs resources server-side functions initial migration
+    """
     dependencies = [
         ('resources', '0001_initial_schema'),
     ]

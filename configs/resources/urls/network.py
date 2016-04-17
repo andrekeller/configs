@@ -1,9 +1,14 @@
 """
-configs resources app network view urls.
+confi.gs network urls.
 """
+# django
 from django.conf.urls import url
-from ..views import NetworkCreate, NetworkDelete, NetworkDetail, NetworkList, \
-    NetworkUpdate
+# confi.gs
+from ..views import NetworkCreate
+from ..views import NetworkDelete
+from ..views import NetworkDetail
+from ..views import NetworkList
+from ..views import NetworkUpdate
 
 urlpatterns = [
     url(r'^$',

@@ -1,5 +1,5 @@
 """
-configs common app.
+confi.gs common app.
 
-bundles utility functions, templatetags and alike used by other configs apps.
+bundles features used across the various confi.gs apps.
 """

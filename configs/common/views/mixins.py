@@ -1,8 +1,14 @@
+"""
+confi.gs view mixins
+"""
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.views.generic.detail import SingleObjectMixin
 
 
 class ParentModifyMixin(SingleObjectMixin):
+    """
+    mixin for a view with a parent view
+    """
     parent_model = None
     parent_ref = None
 
@@ -37,6 +43,9 @@ class ParentModifyMixin(SingleObjectMixin):
 
 
 class ParentCreateMixin:
+    """
+    mixin for a create view with a parent view
+    """
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

@@ -1,12 +1,24 @@
 """
-configs resource app django-admin configuration.
+confi.gs resources app django-admin configuration.
 """
+# django
 from django.contrib import admin
-from resources.models import Domain, Host, Network, Vlan, Vrf
+# confi.gs
+from .models import Domain
+from .models import Host
+from .models import Network
+from .models import Vlan
+from .models import Vrf
 
 
 class VrfModelAdmin(admin.ModelAdmin):
+    """
+    vrf admin, may not delete the default vrf
+    """
     def has_delete_permission(self, request, obj=None):
+        """
+        override delete permission for the default vrf
+        """
         try:
             if obj.pk == 1:
                 return False
@@ -16,6 +28,9 @@ class VrfModelAdmin(admin.ModelAdmin):
 
 
 class NetworkInline(admin.TabularInline):
+    """
+    network inline, shows networks assigned to a host
+    """
     model = Network
     raw_id_fields = ('host',)
     extra = 1

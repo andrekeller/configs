@@ -1,36 +1,59 @@
 """
-configs resources app network model
+confi.gs resources network models
 """
-
+# stdlib
 from collections import deque
+# django
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-from django.db import connection, models
+from django.db import connection
+from django.db import models
+# 3rd-party
 from tagging.fields import TagField
+# confi.gs
+from cidrfield import IPv4Network
+from cidrfield import IPv6Network
 from cidrfield.fields import CidrField
 from cidrfield.validators import validate_network
-from cidrfield import IPv4Network, IPv6Network
 from .decorators import valid_network_property
 
 
 class NetworkManager(models.Manager):
+    """
+    Default manager for the network model
+    """
 
     def search(self, term):
         pass
 
 
 class HostNetworkManager(models.Manager):
+    """
+    Manager for the network model, returning only host addresses.
+    """
 
     def get_queryset(self):
+        """
+        Returns a QuerySet, containing only host addresses.
+        (i.e. /128 prefixes for IPv6, /32 prefixes for IPv4)
+        """
         return super().get_queryset().extra(
             where=["""
-              (masklen(network) = 32 and family(network) = 4) OR (masklen(network) = 128 and family(network) = 6)
+              (masklen(network) = 32 AND family(network) = 4) OR
+              (masklen(network) = 128 AND family(network) = 6)
             """]
         )
 
+
 class RootNetworkManager(models.Manager):
+    """
+    Manager for the network model, returning only root (parent-less) networks.
+    """
 
     def get_queryset(self):
+        """
+        Returns QuerySet, containing only prefixes without parent.
+        """
         return super().get_queryset().extra(
             where=["""
                 NOT EXISTS(
@@ -46,7 +69,7 @@ class RootNetworkManager(models.Manager):
 
 class Network(models.Model):
     """
-    model to represent the networks and ip addresses.
+    confi.gs network model
     """
     network = CidrField(validators=[validate_network, ])
     description = models.TextField(null=True, blank=True)
@@ -68,20 +91,13 @@ class Network(models.Model):
     def __str__(self):
         """
         string representation of network objects
-
-        :returns: network in cidr notation. if /32 (or /128 if IPv6) the
-                  prefix length is omitted.
-        :rtype: str
         """
         return str(self.network)
 
     @valid_network_property
     def child_blocks(self):
         """
-        child blocks of the network object.
-
-        :returns: child blocks
-        :rtype: RawQuerySet
+        returns child blocks of the network object as a QuerySet.
         """
         return Network.objects.extra(
             where=["""
@@ -100,37 +116,40 @@ class Network(models.Model):
 
     @valid_network_property
     def netmask(self):
+        """
+        returns netmask of the network object
+        """
         return self.network.netmask
 
     @valid_network_property
     def network_address(self):
         """
-        network address (network id, host-part of address all zero) of the
+        returns network address (network id, host-part of address all zero) of the
         network object.
-
-        :returns: network address (network id)
-        :rtype: str
         """
         return str(self.network.network_address)
 
     @valid_network_property
     def broadcast_address(self):
         """
-        broadcast address (host-part of address all one) of the network object.
-
-        :returns: broadcast address
-        :rtype: str
+        returns broadcast address (host-part of address all one) of the network object.
         """
         return str(self.network.broadcast_address)
 
     @valid_network_property
     def host_max(self):
+        """
+        returns last usable address of the network object.
+        """
         if self.use_reserved_addresses or self.family == 6:
             return self.network.broadcast_address
         return self.network.broadcast_address - 1
 
     @valid_network_property
     def host_min(self):
+        """
+        returns first usable address of the network object.
+        """
         if self.use_reserved_addresses:
             return self.network.network_address
         return self.network.network_address + 1
@@ -142,20 +161,14 @@ class Network(models.Model):
     @valid_network_property
     def family(self):
         """
-        address family of the network object.
-
-        :returns: address family
-        :rtype: int
+        returns address family of the network object as int.
         """
         return self.network.version
 
     @valid_network_property
     def num_addresses(self):
         """
-        number of usable addresses in the network object.
-
-        :returns: number of usable addresses
-        :rtype: int
+        returns number of usable addresses in the network object.
         """
         if self.use_reserved_addresses:
             return self.network.num_addresses
@@ -172,9 +185,7 @@ class Network(models.Model):
     @property
     def parent_block(self):
         """
-        most specific parent block of network object.
-
-        :returns: Network
+        returns most specific parent block of network object as network object.
         """
         try:
             return self.parent_blocks[0]
@@ -184,9 +195,7 @@ class Network(models.Model):
     @property
     def parent_blocks(self):
         """
-        parent blocks of network object.
-
-        :returns: QuerySet
+        returns all parent blocks of network object as QuerySet.
         """
         return Network.objects.filter(
             network__contains='%s' % self.network,
@@ -194,6 +203,9 @@ class Network(models.Model):
         ).order_by('-network')
 
     def next(self, prefixlen=32):
+        """
+        returns next free prefix within network object.
+        """
         if not self.network:
             return None
         if not isinstance(self.network, (IPv4Network, IPv6Network)):
@@ -214,7 +226,6 @@ class Network(models.Model):
     def prefixlens(self):
         """
         "sane" prefixlens for child blocks within this network
-        :return: list of prefixlen
         """
         if self.family == 4:
             prefixlens = deque(range(self.prefixlen + 1, 32))
@@ -233,10 +244,8 @@ class Network(models.Model):
     def assigned(self):
         """
         percentage of assigned addresses in relation to available addresses
-
-        :return: percentage of addresses
-        :rtype: float
         """
+        # todo: this should be an annotation in the default QuerySet
         cursor = connection.cursor()
         cursor.execute('''
           SELECT COUNT(*)
@@ -263,10 +272,8 @@ class Network(models.Model):
     def allocated(self):
         """
         percentage of suballocated addresses in relation to available addresses
-
-        :return: percentage of addresses
-        :rtype: float
         """
+        # todo: this should be an annotation in the default QuerySet
         cursor = connection.cursor()
         cursor.execute('''
           SELECT DISTINCT SUM(2 ^ (%(max_prefixlen)s - masklen(c.network)))
@@ -290,33 +297,27 @@ class Network(models.Model):
     @valid_network_property
     def prefixlen(self):
         """
-        cidr prefix length in bits
-
-        :returns: cidr prefix length
-        :rtype: int
+        returns cidr prefix length of the network object as int
         """
         return self.network.prefixlen
 
     @valid_network_property
     def max_prefixlen(self):
         """
-        cidr max prefix length in bits
-
-        :returns: cidr max prefix length for networks address family
-        :rtype: int
+        returns cidr max prefix length of the network objects family as int
         """
         return self.network.max_prefixlen
 
     def get_absolute_url(self):
         """
-        canonical url for network object
-
-        :returns: url
-        :rtype: str
+        returns a canonical url for network object
         """
         return reverse('resources:network-detail', args=[self.pk])
 
     def clean(self):
+        """
+        returns a validated data of the network object
+        """
         cleaned_data = super(Network, self).clean()
 
         if self.network is None:
@@ -333,9 +334,11 @@ class Network(models.Model):
         if self.parent_block and self.prefixlen == self.network.max_prefixlen:
             if not self.parent_block.use_reserved_addresses:
                 if self.parent_block.network_address == str(self.network):
+                    # todo: better error message
                     raise ValidationError('network address')
                 if self.family == 4:
                     if self.parent_block.broadcast_address == str(self.network):
+                        # todo: better error message
                         raise ValidationError('broadcast address')
 
         if self.prefixlen < self.network.max_prefixlen:
@@ -344,6 +347,7 @@ class Network(models.Model):
                     if self.network_address == str(
                         self.child_blocks.first()
                     ):
+                        # todo: better error message
                         raise ValidationError('network address')
                 except IndexError:
                     pass
@@ -353,6 +357,7 @@ class Network(models.Model):
                         if self.broadcast_address == str(
                                 self.child_blocks.order_by('-network').first()
                         ):
+                            # todo: better error message
                             raise ValidationError('broadcast address')
                     except IndexError:
                         pass
@@ -361,6 +366,9 @@ class Network(models.Model):
 
     @classmethod
     def from_db(cls, db, field_names, values):
+        """
+        todo: figure out why this is overridden...
+        """
         instance = super().from_db(db, field_names, values)
         instance._loaded_values = dict(zip(field_names, values))
         return instance

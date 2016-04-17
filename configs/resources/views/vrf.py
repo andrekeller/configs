@@ -11,23 +11,38 @@ from resources.models import Vrf
 
 
 class VrfMixin(LoginRequiredMixin):
+    """
+    mixin for common vrf view settings
+    """
     model = Vrf
     success_url = reverse_lazy('resources:vrf-list')
 
 
 class VrfModifyMixin(VrfMixin):
+    """
+    mixin for common data-modifying vrf view settings
+    """
     fields = [
         'name',
     ]
 
 
 class VrfCreate(VrfModifyMixin, CreateView):
-    pass
+    """
+    view to create a vrf
+    """
 
 
 class VrfDelete(VrfMixin, DeleteView):
+    """
+    view to delete a vrf
+    """
 
     def delete(self, request, *args, **kwargs):
+        """
+        override delete to display a error message, when deleting a vrf
+        would cause conflicting vlans/networks in the default vrf.
+        """
         try:
             return super().delete(request, *args, **kwargs)
         except IntegrityError as exc:
@@ -37,13 +52,18 @@ class VrfDelete(VrfMixin, DeleteView):
 
 
 class VrfDetail(VrfMixin, DetailView):
-    pass
+    """
+    view for vrf details
+    """
 
 
 class VrfList(VrfMixin, ListView):
-    pass
+    """
+    view to list all vrfs
+    """
 
 
 class VrfUpdate(VrfModifyMixin, UpdateView):
-    pass
-
+    """
+    views to edit an existing vrf
+    """

@@ -1,7 +1,11 @@
+"""
+confi.gs api urls
+"""
+# django
 from django.conf.urls import url, include
-
+# 3rd-party
 from tastypie.api import Api
-
+# confi.gs
 from resources.api import NetworkResource
 from resources.api import VlanResource
 from resources.api import VrfResource

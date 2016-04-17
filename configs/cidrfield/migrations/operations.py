@@ -1,7 +1,6 @@
 """
-configs cidr field migration operations.
+confi.gs cidrfield migration operations.
 """
-
 from django.db.migrations.operations.base import Operation
 
 

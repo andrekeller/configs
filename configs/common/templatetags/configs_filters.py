@@ -1,9 +1,11 @@
 """
-configs template filters.
+confi.gs template filters.
 """
+# stdlib
+from urllib.parse import urlencode
+# django
 from django import template
 from django.core.urlresolvers import reverse
-from urllib.parse import urlencode
 
 register = template.Library()
 
@@ -21,6 +23,9 @@ def first_line(value):
 
 @register.filter()
 def prefix_help(value, family=4):
+    """
+    returns a help text based on the prefixlen and address family.
+    """
     if family == 4:
         return " (%d addresses)" % (2 ** (32 - value))
     else:
@@ -48,6 +53,9 @@ def percentage(value):
 
 @register.filter()
 def add_class(field, class_name):
+    """
+    adds a css class to a django form widget
+    """
     return field.as_widget(attrs={
         "class": " ".join((field.css_classes(), class_name))
     })
@@ -55,6 +63,9 @@ def add_class(field, class_name):
 
 @register.simple_tag()
 def api_url(resource, **kwargs):
+    """
+    returns the api_url for a specific resource resource
+    """
     resource_url = reverse('api_dispatch_list',
                            kwargs={'resource_name': resource, 'api_name': 'v1'})
     if kwargs:

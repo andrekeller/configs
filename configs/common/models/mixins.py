@@ -1,3 +1,8 @@
+"""
+confi.gs common model mixins
+"""
+
+
 class ValidateModelMixin:
     """
     Mixin to force validation upon save.

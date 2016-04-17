@@ -1,7 +1,9 @@
 """
-custom lookups for configs cidr field.
+confi.gs lookups for cidrfield.
 """
+# stdlib
 import ipaddress
+# django
 from django.db.models import Lookup
 
 

@@ -1,5 +1,5 @@
 """
-configs cidr field.
+confi.gs cidrfield.
 
 django model field that implements the PostgreSQL CIDR field.
 """

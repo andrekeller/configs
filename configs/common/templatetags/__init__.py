@@ -1,3 +1,3 @@
 """
-configs templatetags.
+confi.gs templatetags.
 """
