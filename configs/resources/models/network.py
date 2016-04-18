@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import connection
 from django.db import models
+from django.db.models.expressions import RawSQL
 # 3rd-party
 from tagging.fields import TagField
 # confi.gs
@@ -225,11 +226,17 @@ class Network(models.Model):
             return None
 
         cursor = connection.cursor()
-        cursor.execute('''
-          SELECT find_free_block(%(vrf)s, %(parent)s, %(prefixlen)s)
-        ''', {'vrf': self.vrf_id,
-              'parent': self.network.compressed,
-              'prefixlen': prefixlen})
+        if prefixlen != 0:
+            cursor.execute('''
+              SELECT find_free_block(%(vrf)s, %(parent)s, %(prefixlen)s)
+            ''', {'vrf': self.vrf_id,
+                  'parent': self.network.compressed,
+                  'prefixlen': prefixlen})
+        else:
+            cursor.execute('''
+              SELECT find_largest_free_block(%(vrf)s, %(parent)s)
+            ''', {'vrf': self.vrf_id,
+                  'parent': self.network.compressed})
         try:
             return validate_network(cursor.fetchone()[0])
         except ValidationError:
@@ -240,16 +247,13 @@ class Network(models.Model):
         """
         "sane" prefixlens for child blocks within this network
         """
+        largest_free_prefix = self.next(prefixlen=0)
         if self.family == 4:
-            prefixlens = deque(range(self.prefixlen + 1, 32))
+            prefixlens = deque(range(largest_free_prefix.prefixlen, 32))
         else:
-            prefixlens = deque(range(self.prefixlen + 1, 65))
+            prefixlens = deque(range(largest_free_prefix.prefixlen, 65))
+            prefixlens.append(126)
             prefixlens.append(127)
-
-        for prefixlen in prefixlens.copy():
-            if self.next(prefixlen):
-                return prefixlens
-            prefixlens.popleft()
 
         return prefixlens
 
@@ -258,24 +262,13 @@ class Network(models.Model):
         """
         percentage of assigned addresses in relation to available addresses
         """
-        # todo: this should be an annotation in the default QuerySet
-        cursor = connection.cursor()
-        cursor.execute('''
-          SELECT COUNT(*)
-          FROM   resources_network c
-          WHERE  c.network << %(network)s AND c.vrf_id = %(vrf_id)s
-          AND    masklen(c.network) = %(max_prefixlen)s
-          AND    NOT EXISTS(
-            SELECT 1
-            FROM   resources_network n
-            WHERE  c.network << n.network AND n.network << %(network)s
-          )
-        ''', {'max_prefixlen': self.network.max_prefixlen,
-              'network': self.network.compressed,
-              'vrf_id': self.vrf_id})
-
         try:
-            return cursor.fetchone()[0] * 100 / self.num_addresses
+            return self.child_blocks.extra(
+                where=["""
+                    masklen("resources_network"."network") = %s
+                """],
+                params=(self.network.max_prefixlen,)
+            ).count() * 100 / self.num_addresses
         except ZeroDivisionError:
             return 100
         except (ValueError, TypeError):
@@ -286,24 +279,19 @@ class Network(models.Model):
         """
         percentage of suballocated addresses in relation to available addresses
         """
-        # todo: this should be an annotation in the default QuerySet
-        cursor = connection.cursor()
-        cursor.execute('''
-          SELECT DISTINCT SUM(2 ^ (%(max_prefixlen)s - masklen(c.network)))
-          FROM   resources_network c
-          WHERE  c.network << %(network)s AND c.vrf_id = %(vrf_id)s
-          AND    masklen(c.network) < %(max_prefixlen)s
-          AND    NOT EXISTS(
-            SELECT 1
-            FROM   resources_network n
-            WHERE  c.network << n.network AND n.network << %(network)s
-          )
-        ''', {'max_prefixlen': self.network.max_prefixlen,
-              'network': self.network.compressed,
-              'vrf_id': self.vrf_id})
-
         try:
-            return cursor.fetchone()[0] * 100 / self.network.num_addresses
+            return self.child_blocks.extra(
+                where=['masklen("resources_network"."network") < %s'],
+                params=(self.network.max_prefixlen,)
+            ).annotate(allocated=RawSQL(
+                    'SELECT DISTINCT SUM(2 ^ (%s - masklen("resources_network"."network")))',
+                    (self.network.max_prefixlen,)
+                )
+            ).values(
+                'allocated'
+            ).order_by(
+                'allocated'
+            ).first()['allocated'] * 100 / self.network.num_addresses
         except (ValueError, TypeError):
             return 0.0
 

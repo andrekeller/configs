@@ -56,11 +56,13 @@
         </div>
     {% endfor %}
     <div class="panel-footer">
-        <a class="btn btn-default btn-sm"
-           href="{% url "resources:network-new" %}"
-        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network</a>
-        <a class="btn btn-default btn-sm"
-           href="{% url "resources:networkgroup-new" %}"
-        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network group</a>
+        <div class="btn-group btn-group-sm">
+            <a class="btn btn-default btn-sm"
+               href="{% url "resources:network-new" %}"
+            ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network</a>
+            <a class="btn btn-default btn-sm"
+               href="{% url "resources:networkgroup-new" %}"
+            ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network group</a>
+        </div>
     </div>
 {% endblock %}

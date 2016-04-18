@@ -111,5 +111,32 @@ class Migration(migrations.Migration):
               RETURN NULL;
             END;
           $$ LANGUAGE plpgsql;
+        '''),
+        migrations.RunSQL('''
+          CREATE OR REPLACE FUNCTION find_largest_free_block(
+            arg_vrf INTEGER,
+            arg_parent CIDR
+          ) RETURNS CIDR AS $$
+            DECLARE
+              max_len INTEGER;
+              parent_family INTEGER;
+              free_block CIDR;
+            BEGIN
+              -- determine max prefixlen, based on parents address family
+              parent_family := family(arg_parent);
+              IF parent_family = 4 THEN
+                max_len := 32;
+              ELSE
+                max_len := 128;
+              END IF;
+              FOR prefixlen IN masklen(arg_parent) .. max_len LOOP
+                free_block = find_free_block(arg_vrf, arg_parent, prefixlen);
+                IF free_block IS NOT NULL THEN
+                  RETURN free_block;
+                END IF;
+              END LOOP;
+              RETURN NULL;
+            END;
+          $$ LANGUAGE plpgsql;
         ''')
     ]

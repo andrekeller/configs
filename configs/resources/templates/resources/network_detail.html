@@ -3,6 +3,7 @@
 {% load humanize %}
 
 {% block resources_body %}
+    {% with assigned=network.assigned allocated=network.allocated %}
     <div class="panel-heading">
         <div class="panel-title">
             {{ object.description | first_line | default:network.network }}
@@ -86,10 +87,10 @@
                             <tr>
                                 <th>usage</th>
                                 <td>
-                                    {{ object.allocated | percentage }}
+                                    {{ allocated | percentage }}
                                     <span class="label label-success"
                                     >allocated</span> and
-                                    {{ object.assigned | percentage }}
+                                    {{ assigned | percentage }}
                                     <span class="label label-primary">
                                         assigned
                                     </span>
@@ -97,19 +98,19 @@
                                         <div class="progress-bar
                                                     progress-bar-success
                                                     progress-bar-striped"
-                                             style="width: {{ object.allocated | percentage }}"
+                                             style="width: {{ allocated | percentage }}"
                                         >
                                             <span class="sr-only">
-                                                {{ object.allocated | percentage }}
+                                                {{ allocated | percentage }}
                                                 allocated
                                             </span>
                                         </div>
                                         <div class="progress-bar
                                                     progress-bar-striped"
-                                             style="width: {{ object.assigned | percentage }}"
+                                             style="width: {{ assigned | percentage }}"
                                         >
                                             <span class="sr-only">
-                                                {{ object.assigned | percentage }}
+                                                {{ assigned | percentage }}
                                                 assigned
                                             </span>
                                         </div>
@@ -179,5 +180,6 @@
             {% endwith %}
         </div>
     </div>
+    {% endwith %}
 {% endblock %}
 

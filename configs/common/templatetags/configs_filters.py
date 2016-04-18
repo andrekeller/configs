@@ -31,6 +31,8 @@ def prefix_help(value, family=4):
     else:
         if value == 127:
             return " (2 addresses)"
+        elif value == 126:
+            return " (4 addresses)"
         elif value == 64:
             return " network"
         elif 47 < value < 64:
