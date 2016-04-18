@@ -1,8 +1,6 @@
 """
 confi.gs resources network models
 """
-# stdlib
-from collections import deque
 # django
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
@@ -249,12 +247,11 @@ class Network(models.Model):
         """
         largest_free_prefix = self.next(prefixlen=0)
         if self.family == 4:
-            prefixlens = deque(range(largest_free_prefix.prefixlen, 32))
+            prefixlens = list(range(largest_free_prefix.prefixlen, 32))
         else:
-            prefixlens = deque(range(largest_free_prefix.prefixlen, 65))
+            prefixlens = list(range(largest_free_prefix.prefixlen, 65))
             prefixlens.append(126)
             prefixlens.append(127)
-
         return prefixlens
 
     @valid_network_property
