@@ -7,6 +7,7 @@ from django.contrib import admin
 from .models import Domain
 from .models import Host
 from .models import Network
+from .models import NetworkGroup
 from .models import Vlan
 from .models import Vrf
 
@@ -44,5 +45,6 @@ class HostAdmin(admin.ModelAdmin):
 admin.site.register(Domain)
 admin.site.register(Host, HostAdmin)
 admin.site.register(Network)
+admin.site.register(NetworkGroup)
 admin.site.register(Vlan)
 admin.site.register(Vrf, VrfModelAdmin)

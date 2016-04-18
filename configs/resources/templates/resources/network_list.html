@@ -2,40 +2,65 @@
 {% load configs_filters %}
 
 {% block resources_body %}
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>network</th>
-                <th>vrf</th>
-                <th>description</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for network in object_list %}
+    {% regroup network_list by group as network_list_by_group %}
+    {% for networks in network_list_by_group %}
+        {% if not networks.grouper == None %}
+            <div class="panel-body">
+                <h4 class="pull-left">{{ networks.grouper.name|lower }} networks</h4>
+                <h4 class="pull-right">
+                <a href="{% url "resources:networkgroup-edit" networks.grouper.id %}"
+                   title="edit network group"
+                ><span class="glyphicon glyphicon-pencil"></span></a>
+                <a href="{% url "resources:networkgroup-delete" networks.grouper.id %}"
+                       title="edit network group"
+                    ><span class="glyphicon glyphicon-remove"></span></a>
+                </h4>
+            </div>
+        {% else %}
+            {% if network_list_by_group|length > 1 %}
+                <div class="panel-body">
+                    <h4>ungrouped networks</h4>
+                </div>
+            {% endif %}
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
                 <tr>
-                    <td>
-                        <a href="{% url "resources:network-edit" network.id %}"
-                           title="edit network"
-                        ><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a href="{% url "resources:network-delete" network.id %}"
-                           title="delete network"
-                        ><span class="glyphicon glyphicon-remove"></span></a>
-                        &nbsp;
-                        <a href="{{ network.get_absolute_url }}"
-                           title="{{ network.network }} details"
-                        >{{ network.network }}</a>
-                    </td>
-                    <td>{{ network.vrf.name }}</td>
-                    <td>{{ network.description | first_line }}</td>
+                    <th class="col-xs-4">network</th>
+                    <th class="col-xs-2">vrf</th>
+                    <th class="col-xs-6">description</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                {% for network in networks.list %}
+                    <tr>
+                        <td>
+                            <a href="{% url "resources:network-edit" network.id %}"
+                               title="edit network"
+                            ><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a href="{% url "resources:network-delete" network.id %}"
+                               title="delete network"
+                            ><span class="glyphicon glyphicon-remove"></span></a>
+                            &nbsp;
+                            <a href="{{ network.get_absolute_url }}"
+                               title="{{ network.network }} details"
+                            >{{ network.network }}</a>
+                        </td>
+                        <td>{{ network.vrf.name }}</td>
+                        <td>{{ network.description | first_line }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
     <div class="panel-footer">
         <a class="btn btn-default btn-sm"
            href="{% url "resources:network-new" %}"
         ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network</a>
+        <a class="btn btn-default btn-sm"
+           href="{% url "resources:networkgroup-new" %}"
+        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add network group</a>
     </div>
 {% endblock %}

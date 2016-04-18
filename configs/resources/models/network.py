@@ -63,8 +63,20 @@ class RootNetworkManager(models.Manager):
                         n.network >> "resources_network"."network" AND
                         n.vrf_id = "resources_network"."vrf_id"
                 )"""""]
-        )
+        ).order_by('group__name', 'network')
 
+
+class NetworkGroup(models.Model):
+    """
+    confi.gs network group model
+    """
+    name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return "%s" % self.name
 
 
 class Network(models.Model):
@@ -79,6 +91,7 @@ class Network(models.Model):
     status = models.ForeignKey('resources.ResourceStatus', default=1)
     tags = TagField()
     host = models.ForeignKey('resources.Host', blank=True, null=True)
+    group = models.ForeignKey('resources.NetworkGroup', blank=True, null=True, on_delete=models.SET_NULL)
 
     objects = NetworkManager()
     root_objects = RootNetworkManager()

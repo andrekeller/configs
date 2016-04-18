@@ -15,6 +15,9 @@ from .network import NetworkDelete
 from .network import NetworkDetail
 from .network import NetworkList
 from .network import NetworkUpdate
+from .networkgroup import NetworkGroupCreate
+from .networkgroup import NetworkGroupDelete
+from .networkgroup import NetworkGroupUpdate
 from .vlan import VlanCreate
 from .vlan import VlanDelete
 from .vlan import VlanUpdate

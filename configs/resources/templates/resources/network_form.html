@@ -56,6 +56,11 @@
                 >{{ form.host.label|escape|lower }}</label>
                 <div class="col-sm-4 form-spacer"
                 >{{ form.host|add_class:"form-control" }}</div>
+                <label class="control-label col-sm-2 form-spacer"
+                       for="{{ form.group.id_for_label }}"
+                >{{ form.group.label|escape|lower }}</label>
+                <div class="col-sm-4 form-spacer"
+                >{{ form.group|add_class:"form-control" }}</div>
             </div>
             <div class="row">
                 <label class="control-label col-sm-2 form-spacer"
@@ -90,6 +95,10 @@
             plugins: ['restore_on_backspace', 'remove_button']
         });
         $('#id_status').selectize({
+            create: false,
+            sortField: 'text'
+        });
+        $('#id_group').selectize({
             create: false,
             sortField: 'text'
         });

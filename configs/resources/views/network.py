@@ -12,9 +12,9 @@ from django.views.generic.edit import CreateView
 from django.views.generic.edit import DeleteView
 from django.views.generic.edit import UpdateView
 # confi.gs
+from resources.forms import NetworkForm
 from resources.models import Network
 from resources.models import Vlan
-from ..forms import NetworkForm
 
 
 class NetworkMixin(LoginRequiredMixin):
@@ -114,7 +114,7 @@ class NetworkList(NetworkMixin, ListView):
     """
     view to list all networks
     """
-    queryset = Network.root_objects.all().select_related('vlan', 'vrf')
+    queryset = Network.root_objects.all().select_related('vlan', 'vrf', 'group')
 
 
 class NetworkUpdate(NetworkModifyMixin, UpdateView):

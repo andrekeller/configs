@@ -34,14 +34,15 @@ class NetworkForm(forms.ModelForm):
     class Meta:
         model = Network
         fields = [
-            'network',
-            'use_reserved_addresses',
             'description',
-            'vrf',
-            'vlan',
-            'status',
+            'group',
             'host',
+            'network',
+            'status',
             'tags',
+            'use_reserved_addresses',
+            'vlan',
+            'vrf',
         ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
