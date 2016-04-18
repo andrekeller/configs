@@ -1,5 +1,6 @@
 __pycache__/
 *.py[c]
+/.idea/dataSources.ids
 /.idea/dataSources.local.xml
 /.idea/workspace.xml
 /.idea/tasks.xml
