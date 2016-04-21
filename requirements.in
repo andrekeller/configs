@@ -1,9 +1,7 @@
-defusedxml
 django
 django-debug-toolbar
 django-tagging
 django-tastypie
-lxml
 pip-tools
 psycopg2
 pyyaml
