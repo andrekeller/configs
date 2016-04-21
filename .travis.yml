@@ -1,0 +1,17 @@
+language: python
+services:
+  - postgresql
+addons:
+  postgresql: "9.4"
+python:
+  - "3.4"
+  - "3.5"
+  - nightly
+install: 
+  - pip install -r requirements.txt
+before_script:
+  - psql -U postgres -c 'CREATE USER configs WITH PASSWORD "configs";'
+  - psql -U postgres -c 'ALTER USER configs WITH SUPERUSER;'
+  - cd configs
+script:
+  - python3 ./manage.py test
