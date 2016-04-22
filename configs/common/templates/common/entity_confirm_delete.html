@@ -1,0 +1,22 @@
+{% extends 'common/entity.html' %}
+
+{% block common_body %}
+    <form class="form-horizontal" method="post">
+        <div class="panel-body">
+            <div class="alert alert-danger" role="alert">
+                Are you sure you want to delete the entity
+                <strong>{{ entity }}</strong>?
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            {% block form_footer %}
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    &nbsp;delete
+                </button>
+            {% endblock %}
+        </div>
+        {% csrf_token %}
+    </form>
+{% endblock %}

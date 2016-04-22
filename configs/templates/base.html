@@ -37,7 +37,7 @@
             {% if user.is_authenticated %}
                 <div class="collapse navbar-collapse" id="navbar-collapsable">
                     <ul class="nav navbar-nav">
-                        <li class="dropdown">
+                        <li class="dropdown {% navactive_namespace 'resources' %}">
                             <a href="#"
                                data-toggle="dropdown"
                                class="dropdown-toggle"
@@ -59,6 +59,10 @@
                                     >vrfs / vlans</a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="{% navactive 'common:entity-list' %}">
+                            <a href="{% url 'common:entity-list' %}"
+                            >entities</a>
                         </li>
                     </ul>
                     <form class="navbar-form navbar-right">
@@ -86,9 +90,6 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li class="{% navactive 'logout' %}">
-                                    <a href="#">user settings</a>
-                                </li>
                                 <li class="{% navactive 'password_change' %}">
                                     <a href="{% url 'password_change' %}"
                                     >change password</a>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {% block breadcrumbs %}
+            {% endblock %}
+        </div>
+        {% block common_body %}
+        {% endblock %}
+    </div>
+{% endblock %}

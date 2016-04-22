@@ -16,7 +16,7 @@ class EntityMixin(LoginRequiredMixin):
     mixin for common entity view settings
     """
     model = Entity
-    success_url = reverse_lazy('resources:entity-list')
+    success_url = reverse_lazy('common:entity-list')
 
 
 class EntityModifyMixin(EntityMixin):

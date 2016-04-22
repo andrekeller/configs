@@ -1,0 +1,44 @@
+{% extends "common/entity.html" %}
+
+{% block common_body %}
+    {% for entity in entity_list %}
+
+        {% if forloop.first %}
+            <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>entity</th>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+        <tr>
+            <td>
+                <a href="{% url "common:entity-edit" entity.id %}"
+                   title="edit entity"
+                ><span class="glyphicon glyphicon-pencil"></span></a>
+                <a href="{% url "common:entity-delete" entity.id %}"
+                   title="delete entity"
+                ><span class="glyphicon glyphicon-remove"></span></a>
+                &nbsp;
+                {{ entity }}
+            </td>
+        </tr>
+        {% if forloop.last %}
+            </tbody>
+            </table>
+            </div>
+        {% endif %}
+    {% empty %}
+        <div class="panel-body">
+            <div class="alert alert-warning">no entities</div>
+        </div>
+    {% endfor %}
+    <div class="panel-footer">
+        <a class="btn btn-default btn-sm"
+           href="{% url "common:entity-new" %}"
+        ><span class="glyphicon glyphicon-plus"></span>&nbsp;add entity</a>
+    </div>
+{% endblock %}
+

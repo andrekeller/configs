@@ -1,0 +1,27 @@
+{% extends 'common/entity.html' %}
+{% load configs_filters %}
+
+{% block common_body %}
+    <form class="form-horizontal" method="post">
+        <div class="panel-body">
+            {{ form.non_field_errors }}
+            <div class="row">
+                <label class="form-spacer control-label col-sm-1"
+                       for="{{ form.name.id_for_label }}"
+                >{{ form.name.label|escape|lower }}</label>
+                {{ form.name.errors }}
+                <div class="col-sm-3 form-spacer"
+                >{{ form.name|add_class:"form-control" }}</div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            {% block form_footer %}
+                <button type="submit"
+                        class="btn btn-success btn-sm"
+                ><span class="glyphicon glyphicon-ok"></span>&nbsp;save</button>
+            {% endblock %}
+        </div>
+        {% csrf_token %}
+    </form>
+{% endblock %}
+
