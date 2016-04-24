@@ -147,9 +147,8 @@ Setup nginx
     server {
 
         listen [::]:443 ipv6only=off ssl;
-        server_name configs.example.net
+        server_name configs.example.net;
 
-        ssl on;
         ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
         ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
         ssl_dhparam /etc/ssl/dh4096.pem;
