@@ -58,7 +58,7 @@ Setup postgresql database
 
     sudo -iu postgres psql template1
 
-.. code:: sql
+.. code-block:: postgresql
 
     CREATE DATABASE configs;
     CREATE USER configs WITH PASSWORD 'SecureDatabasePassword';
@@ -83,6 +83,10 @@ The configuration of confi.gs is done via environment variables.
     CONFIGS_SECURITY_SESSION_COOKIE_SECURE=yes
     CONFIGS_SECURITY_SECRET_KEY=LongUnpredictableSecureString
 
+::
+
+    chmod 400 /etc/default/configs
+    chown configs:configs /etc/default/configs
 
 Setup service for configs
 -------------------------
@@ -97,6 +101,7 @@ Setup service for configs
     After=postgresql.service
 
     [Service]
+    User=configs
     WorkingDirectory=/home/configs/app/configs
     EnvironmentFile=/etc/default/configs
     ExecStartPre=/home/configs/pyvenv/bin/python \
