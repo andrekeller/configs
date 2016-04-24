@@ -13,6 +13,7 @@ done
 exec /usr/bin/uwsgi \
     --chdir /srv/configs \
     --die-on-term \
+    --need-app \
     --env DJANGO_SETTINGS_MODULE=configs.settings \
     --enable-threads \
     --master \
