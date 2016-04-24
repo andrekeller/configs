@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# configs documentation build configuration file, created by
-# sphinx-quickstart on Sat Sep 19 19:30:34 2015.
-#
 # This file is execfile()d with the current directory set to its
 # containing dir.
 #
@@ -47,8 +44,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'configs'
-copyright = '2015, André Keller'
+project = 'confi.gs'
+copyright = '2015-2016, André Keller'
 author = 'André Keller'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -109,7 +106,7 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

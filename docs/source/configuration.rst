@@ -5,20 +5,14 @@ configuration
 .. _`configuration`:
 
 
-confi.gs comes with various configuration options that can be set in different
-ways. Configuration can be passed as OS environment variables or in form of a
-configuration file in /etc/configs/configs.ini. OS environment variables have
-higher priority than settings from the configuration file. If neither is
-present, internal defaults *NOT SUITABLE FOR PRODUCTION* will be used.
+confi.gs reads its configuration from OS environment variables.
+
+confi.gs comes with some insecure internal defaults (marked below) in order
+to ease development and testing of the application. confi.gs refuses to start
+if these internal defaults are not overridden in a production environment!
 
 environment variables
 =====================
-
-**CONFIGS_CONFIGS_ENCDATA_FIELDS**
-  Space separated list of field names for the external node classifier.
-
-  *Default*: 'location role flavor'
-
 
 **CONFIGS_DATABASE_HOST**
   IP or hostname of the postgresql database server.
@@ -34,6 +28,8 @@ environment variables
 
 **CONFIGS_DATABASE_PASSWORD**
   Password to connect to the database.
+
+  *INSECURE DEFAULT, DO NOT USE IN PRODUCTION*
 
   *Default*: 'configs'
 
@@ -51,7 +47,9 @@ environment variables
 
 
 **CONFIGS_DJANGO_DEBUG**
-  Wheter or not to enable DEBUG mode. *NEVER* enable in production deployments
+  Wheter or not to enable DEBUG mode.
+
+  *INSECURE DEFAULT, DO NOT USE IN PRODUCTION*
 
   *Default*: True
 
@@ -63,9 +61,17 @@ environment variables
   *Default*: None
 
 
+**CONFIGS_ENCDATA_FIELDS**
+  Space separated list of field names for the external node classifier.
+
+  *Default*: 'location role flavor'
+
+
 **CONFIGS_SECURITY_ALLOWED_HOSTS**
   Space separated list of host names the application should answer for. Raises
   an HTTP 400 (bad request) if the request is for a host name not in this list.
+
+  *INSECURE DEFAULT, DO NOT USE IN PRODUCTION*
 
   *Default*: '*'
 
@@ -75,6 +81,8 @@ environment variables
   the cookie will be marked as *secure*, which means browsers may ensure that
   the cookie is only sent under an HTTPS connection.
 
+  *INSECURE DEFAULT, DO NOT USE IN PRODUCTION*
+
   *Default*: False
 
 
@@ -83,6 +91,8 @@ environment variables
   the cookie will be marked as *secure*, which means browsers may ensure that
   the cookie is only sent under an HTTPS connection.
 
+  *INSECURE DEFAULT, DO NOT USE IN PRODUCTION*
+
   *Default*: False
 
 
@@ -90,30 +100,17 @@ environment variables
   A secret key for a particular Django installation. This is used to provide
   cryptographic signing, and should be set to a unique, unpredictable value.
 
+  *INSECURE DEFAULT, DO NOT USE IN PRODUCTION*
+
   *Default*: 'InSecureDefaultNeverUseItInProduction'
 
   https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 
 
-configuration file
-==================
+**CONFIGS_USE_INSECURE_DEFAULTS**
+  Wheter to accept insecure defaults. If this is set to True, the application
+  will run regardless of insecure internal default values.
 
-The configuration file is a INI-style file /etc/configs/configs.ini.
+  This defaults to False, unless confi.gs is started via its `manage.py` script.
 
-It supports the same configuration options as the environment variables.
-
-A few examples:
-
-To set *CONFIGS_DJANGO_DEBUG*:
-
-.. code-block:: ini
-
-    [django]
-    debug = True
-
-To set *CONFIGS_CONFIGS_ENCDATA_FIELDS*
-
-.. code-block:: ini
-
-    [configs]
-    encdata_fields = 'field1 field2 field3'
+  *ONLY TOUCH THIS IF YOU ARE REALLY SURE WHAT YOU ARE DOING*
