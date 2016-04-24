@@ -3,7 +3,7 @@ confi.gs common app tests for models/entity.py
 """
 # django
 from django.core.exceptions import ValidationError
-from django.db.utils import DataError, IntegrityError
+from django.db.utils import IntegrityError
 from django.test import TestCase
 # confi.gs
 from common.models import Entity
@@ -51,10 +51,10 @@ class EntityTestCase(TestCase):
             blank_entity.full_clean()
 
     def test_entity_name_to_long(self):
-        blank_entity = Entity(
+        long_entity = Entity(
             name="test"*128
         )
         with self.assertRaises(ValidationError):
-            blank_entity.full_clean()
+            long_entity.full_clean()
 
 

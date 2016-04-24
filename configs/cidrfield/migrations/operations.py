@@ -8,6 +8,7 @@ class AddCidrIndex(Operation):
     """
     django migration operation to define an inet_ops GiST index for a field.
     """
+    # TODO: add test
 
     reversible = True
 

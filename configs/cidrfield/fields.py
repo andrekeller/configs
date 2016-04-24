@@ -15,6 +15,7 @@ class CidrField(models.Field):
     """
     CidrField model field.
     """
+    # TODO: add test
 
     description = _("An IPv4 or IPv6 address represented in CIDR notation")
     empty_strings_allowed = False

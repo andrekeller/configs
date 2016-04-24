@@ -9,6 +9,7 @@ class ParentModifyMixin(SingleObjectMixin):
     """
     mixin for a view with a parent view
     """
+    # TODO: add test
     parent_model = None
     parent_ref = None
 
@@ -46,6 +47,7 @@ class ParentCreateMixin:
     """
     mixin for a create view with a parent view
     """
+    # TODO: add test
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
