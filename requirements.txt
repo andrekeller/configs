@@ -19,3 +19,4 @@ pyyaml==3.11
 requests==2.9.1
 six==1.10.0               # via pip-tools, python-dateutil
 sqlparse==0.1.19          # via django-debug-toolbar
+https://github.com/unbit/uwsgi/archive/uwsgi-2.0.zip#egg=uwsgi

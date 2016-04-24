@@ -1,8 +1,20 @@
 """
 confi.gs project configuration
 """
-import configparser
+# stdlib
 import os
+# django
+from django.core.exceptions import ImproperlyConfigured
+
+insecure_default_settings = {
+    'CONFIGS_DATABASE_PASSWORD': 'configs',
+    'CONFIGS_DJANGO_DEBUG': True,
+    'CONFIGS_SECURITY_ALLOWED_HOSTS': '*',
+    'CONFIGS_SECURITY_CSRF_COOKIE_SECURE': False,
+    'CONFIGS_SECURITY_SEESION_COOKIE_SECURE': False,
+    'CONFIGS_SECURITY_SECRET_KEY': 'InSecureDefaultNeverUseItInProduction!',
+}
+insecure_settings = []
 
 
 def any2bool(obj):
@@ -17,40 +29,43 @@ def any2bool(obj):
     else:
         return bool(obj)
 
+
+def configs_setting(setting, default=None):
+    """
+    returns a configuration setting, either read from the environment, from
+    the insecure_default_settings dict or default.
+
+    if the value from insecure_default_settings dict is used, the setting is
+    added to insecure_settings lists.
+    """
+    final_setting = os.getenv(
+        setting,
+        insecure_default_settings.get(setting, default)
+    )
+    if setting in insecure_default_settings:
+        if final_setting == insecure_default_settings[setting]:
+            insecure_settings.append(setting)
+    return final_setting
+
+
 BASE_DIR = os.path.dirname(__file__)
 
-CONFIGS_INI = configparser.ConfigParser()
-CONFIGS_INI.read('/etc/configs/configs.ini')
+USE_INSECURE_DEFAULTS = any2bool(configs_setting(
+    'CONFIGS_USE_INSECURE_DEFAULTS', False
+))
 
-SECRET_KEY = os.getenv('CONFIGS_SECURITY_SECRET_KEY',
-                       CONFIGS_INI.get('security',
-                                       'secret_key',
-                                       fallback='InSecureDefaultNeverUseItInProduction'
-                                       )
-                       )
+SECRET_KEY = configs_setting('CONFIGS_SECURITY_SECRET_KEY')
 
-DEBUG = any2bool(os.getenv('CONFIGS_DJANGO_DEBUG',
-                           CONFIGS_INI.getboolean('django',
-                                                  'debug',
-                                                  fallback=True
-                                                  )
-                           )
-                 )
+DEBUG = any2bool(configs_setting('CONFIGS_DJANGO_DEBUG'))
 
+try:
+    ALLOWED_HOSTS = configs_setting('CONFIGS_SECURITY_ALLOWED_HOSTS').split()
+except AttributeError:
+    ALLOWED_HOSTS = None
 
-ALLOWED_HOSTS = os.getenv('CONFIGS_SECURITY_ALLOWED_HOSTS',
-                          CONFIGS_INI.get('security',
-                                          'allowed_hosts',
-                                          fallback="*"
-                                          )
-                          ).split()
-
-ENCDATA_FIELDS = os.getenv('CONFIGS_CONFIGS_ENCDATA_FIELDS',
-                           CONFIGS_INI.get('configs',
-                                           'encdata_fields',
-                                           fallback="location role flavor"
-                                           )
-                           ).split()
+ENCDATA_FIELDS = configs_setting(
+    'CONFIGS_ENCDATA_FIELDS', 'location role flavor'
+).split()
 
 # Application definition
 
@@ -124,94 +139,59 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('CONFIGS_DATABASE_SCHEMA',
-                          CONFIGS_INI.get('database',
-                                          'schema',
-                                          fallback='configs'
-                                          )
-                          ),
-        'USER': os.getenv('CONFIGS_DATABASE_USER',
-                          CONFIGS_INI.get('database',
-                                          'user',
-                                          fallback='configs'
-                                          )
-                          ),
-        'PASSWORD': os.getenv('CONFIGS_DATABASE_PASSWORD',
-                              CONFIGS_INI.get('database',
-                                              'password',
-                                              fallback='configs'
-                                              )
-                              ),
-        'HOST': os.getenv('CONFIGS_DATABASE_HOST',
-                          CONFIGS_INI.get('database',
-                                          'host',
-                                          fallback='127.0.0.1'
-                                          )
-                          ),
-        'PORT': os.getenv('CONFIGS_DATABASE_PORT',
-                          CONFIGS_INI.get('database',
-                                          'port',
-                                          fallback='5432'
-                                          )
-                          ),
+        'NAME': configs_setting(
+            'CONFIGS_DATABASE_SCHEMA', 'configs'
+        ),
+        'USER': configs_setting(
+            'CONFIGS_DATABASE_USER', 'configs'
+        ),
+        'PASSWORD': configs_setting(
+            'CONFIGS_DATABASE_PASSWORD',
+        ),
+        'HOST': configs_setting(
+            'CONFIGS_DATABASE_HOST', '127.0.0.1'
+        ),
+        'PORT': configs_setting(
+            'CONFIGS_DATABASE_PORT', '5432'
+        ),
     }
 }
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+STATIC_ROOT = configs_setting('CONFIGS_DJANGO_STATIC_ROOT')
+STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, '../static'),
 )
-STATIC_ROOT = os.getenv('CONFIGS_DJANGO_STATIC_ROOT',
-                        CONFIGS_INI.get('django',
-                                        'static_root',
-                                        fallback=None
-                                        )
-                        )
-STATIC_URL = '/static/'
 
-CSRF_COOKIE_SECURE = any2bool(
-    os.getenv(
-        'CONFIGS_SECURITY_CSRF_COOKIE_SECURE',
-        CONFIGS_INI.getboolean(
-            'security',
-            'csrf_cookie_secure',
-            fallback=False
-        )
-    )
-)
+CSRF_COOKIE_SECURE = any2bool(configs_setting(
+    'CONFIGS_SECURITY_CSRF_COOKIE_SECURE'
+))
 
-SESSION_COOKIE_SECURE = any2bool(
-    os.getenv(
-        'CONFIGS_SECURITY_SEESION_COOKIE_SECURE',
-        CONFIGS_INI.getboolean(
-            'security',
-            'session_cookie_secure',
-            fallback=False
-        )
-    )
-)
+SESSION_COOKIE_SECURE = any2bool(configs_setting(
+    'CONFIGS_SECURITY_SEESION_COOKIE_SECURE'
+))
 
 FORCE_LOWERCASE_TAGS = True
 
 LOGIN_URL = '/auth/login/'
 LOGOUT_URL = '/auth/logout/'
 LOGIN_REDIRECT_URL = '/'
-
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TASTYPIE_DEFAULT_FORMATS = ['json', 'yaml']
+
+# if we do not explicitly accept insecure defaults, raise an error
+# when insecure defaults are used
+if not USE_INSECURE_DEFAULTS:
+    if insecure_settings:
+        raise ImproperlyConfigured(
+            'Refuse to start with insecure default settings: %s' %
+            ', '.join(insecure_settings)
+        )
