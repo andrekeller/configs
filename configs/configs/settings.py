@@ -11,7 +11,7 @@ insecure_default_settings = {
     'CONFIGS_DJANGO_DEBUG': True,
     'CONFIGS_SECURITY_ALLOWED_HOSTS': '*',
     'CONFIGS_SECURITY_CSRF_COOKIE_SECURE': False,
-    'CONFIGS_SECURITY_SEESION_COOKIE_SECURE': False,
+    'CONFIGS_SECURITY_SESSION_COOKIE_SECURE': False,
     'CONFIGS_SECURITY_SECRET_KEY': 'InSecureDefaultNeverUseItInProduction!',
 }
 insecure_settings = []
@@ -175,7 +175,7 @@ CSRF_COOKIE_SECURE = any2bool(configs_setting(
 ))
 
 SESSION_COOKIE_SECURE = any2bool(configs_setting(
-    'CONFIGS_SECURITY_SEESION_COOKIE_SECURE'
+    'CONFIGS_SECURITY_SESSION_COOKIE_SECURE'
 ))
 
 FORCE_LOWERCASE_TAGS = True
